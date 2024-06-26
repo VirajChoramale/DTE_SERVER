@@ -50,7 +50,7 @@ async function sendOtpSMS( mobileno,uname) {
   const postData = qs.stringify(data); 
 
   const options = {
-    hostname: 'msdgweb.mgov.gov.in',
+    hostname: 'msdgweb.mgov.gov.ind',
     path: '/esms/sendsmsrequestDLT',
     method: 'POST',
     headers: {

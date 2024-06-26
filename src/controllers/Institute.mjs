@@ -1,8 +1,9 @@
 import { executeReadQuery } from "../db/db_operation.mjs";
 
 const getDataCreateProfile=async(req,res)=>{
-   const typ=req.params.type;
-  
+   const inst_id=req.params.id;
+  const typ=req.query.type
+  console.log(typ)
    let data=null;
    let query='';
       if(typ==1){
@@ -18,10 +19,26 @@ const getDataCreateProfile=async(req,res)=>{
         return res.json("Invalid type ")
       }
      const cours_query="select * from course_group; "
+     const post_query=`SELECT ivd.id,ivd.shift,dm.designation_name,dm.designation_name_marathi,crs.coursename,crs.course_marathi_name,ivd.filled_post,ivd.sensction_post as senction_post,ivd.vaccent_post from inst_vaccency_details as ivd
+                      left join course_group as cg on ivd.course_group=cg.id
+                      left join courses as crs on ivd.course_id=crs.id
+                      left join designation_master as dm on ivd.desigation_id=dm.id
+                      WHERE ivd.inst_id=${inst_id};`
+    const employement_query=`SELECT * FROM employbility_status`;
+    const leave_query="SELECT * FROM `leave_reason`";
+    const app_query='SELECT * FROM category';
+    const app_category=await executeReadQuery(app_query)
+    const leave_reason=await executeReadQuery(leave_query);
+    const employement_status=await executeReadQuery(employement_query);
      const courses=await executeReadQuery(cours_query);
+     const post=await  executeReadQuery(post_query)
     return res.send({
         "designations":data,
-        "courses":courses
+        "courses":courses,
+        "post":post,
+        "employement_status":employement_status,
+        "leave_reason":leave_reason,
+        "appointment_category":app_category
         
     })
         

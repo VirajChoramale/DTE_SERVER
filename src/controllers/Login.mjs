@@ -52,14 +52,17 @@ const verify_user= async(username,password)=>{
 }
 const login=async(req,res,next)=>{
    const resp=await verify_user(req.body.username,req.body.password);
+   console.log(req.body.username,req.body.password);
   if(resp.code==200){
     const uname = resp.data[0].username;
    const token=jsonwebtoken.sign({uname},HmacKey,{expiresIn:"120m",algorithm:"HS256"});
    await sendOtpSMS(resp.data[0].mobile,resp.data[0].username).then((res)=>console.log(res)).catch((e)=>console.log("error in sms api"+e));
    
   //console.log(resp.data[0].mobile)
-   res.cookie("tid",token,{expire: 15000 + Date.now()})
-   res.send();
+   res.cookie("tid",token,{expire: 15000 + Date.now(),httpOnly: true, 
+    secure: true, 
+    sameSite: 'None' })
+   res.status(200).send({"msg":resp.msg,"res":resp.res,"lid":token})
    next();
 
     

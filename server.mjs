@@ -2,6 +2,7 @@ import express from "express";
 import cluster from "node:cluster";
 import cookieParser from "cookie-parser";
 import { cpus } from "node:os";
+import cors from 'cors'
 import { configDotenv } from "dotenv"; 
 import { verifyToken,Auth_req } from "./src/middleware/Auth.mjs";
 import { executeReadQuery, executeWriteQuery } from "./src/db/db_operation.mjs";
@@ -12,7 +13,10 @@ import { sendOtpSMS } from "./src/utility/otp.mjs";
 import { read_file } from "./src/utility/Excel.mjs";
 configDotenv();
 const app = express();
-
+app.use(cors({
+  //origin:"http://http://192.168.2.244:3001:3001",
+  //credentials: true
+   }));
 const PORT = process.env.PORT;
 app.use(cookieParser());
 let activeWorkers = new Map();
