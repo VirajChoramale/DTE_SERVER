@@ -6,11 +6,11 @@ import { update_table } from "./Sql_Querries.mjs";
 
 
 function generateOtp(){
-    const length=Math.floor(Math.random() * 3) + 4;
+    const length=Math.floor(Math.random() * 3) + 2;
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i <5; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
@@ -50,7 +50,7 @@ async function sendOtpSMS( mobileno,uname) {
   const postData = qs.stringify(data); 
 
   const options = {
-    hostname: 'msdgweb.mgov.gov.ind',
+    hostname: 'msdgweb.mgov.gov.in',
     path: '/esms/sendsmsrequestDLT',
     method: 'POST',
     headers: {

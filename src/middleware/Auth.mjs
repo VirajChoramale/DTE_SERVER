@@ -3,12 +3,12 @@ import { verify_user } from '../controllers/Login.mjs';
 
 
 const verifyToken = async (req, res, next) => {
-    
-    const token = req.cookies.tid;
+    console.log(req.body.token)
+    const token = req.body.token;
   
   
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized: Missing access token' });
+      return res.status(200).json({ message: 'Unauthorized: Missing access token' });
     }
   
     
