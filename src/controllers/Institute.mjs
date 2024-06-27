@@ -27,6 +27,8 @@ const getDataCreateProfile=async(req,res)=>{
     const employement_query=`SELECT * FROM employbility_status`;
     const leave_query="SELECT * FROM `leave_reason`";
     const app_query='SELECT * FROM category';
+    const dteOffice_loc="select * from dte_offices";
+    const dteOffices=await executeReadQuery(dteOffice_loc);
     const app_category=await executeReadQuery(app_query)
     const leave_reason=await executeReadQuery(leave_query);
     const employement_status=await executeReadQuery(employement_query);
@@ -38,7 +40,8 @@ const getDataCreateProfile=async(req,res)=>{
         "post":post,
         "employement_status":employement_status,
         "leave_reason":leave_reason,
-        "appointment_category":app_category
+        "appointment_category":app_category,
+        "deputationLocation":dteOffices
         
     })
         
@@ -49,6 +52,17 @@ const getDataCreateProfile=async(req,res)=>{
     
 
 }
+const getEmployee =async(req,res)=>{
+  const inst_id=req.params.id;
+  const eid=req.query.empid
+  const employee_query=`SELECT * FROM employee where id=${eid} and inst_id=${inst_id}`;
+  const employee=await executeReadQuery(employee_query);
+  return res.send({
+    "employeeData":employee
+  })
+
+}
 export{
-    getDataCreateProfile
+    getDataCreateProfile,
+    getEmployee
 }

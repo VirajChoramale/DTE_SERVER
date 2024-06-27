@@ -3,8 +3,8 @@ import { verify_user } from '../controllers/Login.mjs';
 
 
 const verifyToken = async (req, res, next) => {
-    console.log(req.body.token)
-    const token = req.body.token;
+    
+    const token = req.body.token; 
   
   
     if (!token) {
@@ -14,7 +14,7 @@ const verifyToken = async (req, res, next) => {
     
     try {
       const decoded = jsonwebtoken.verify(token, process.env.HMAC);
-      req.user = decoded; // Attach decoded user information to request object (optional)
+      req.user = decoded; 
       next(); 
     } catch (error) {
         // Check for specific errors

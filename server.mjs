@@ -4,12 +4,10 @@ import cookieParser from "cookie-parser";
 import { cpus } from "node:os";
 import cors from 'cors'
 import { configDotenv } from "dotenv"; 
-import { verifyToken,Auth_req } from "./src/middleware/Auth.mjs";
 import { executeReadQuery, executeWriteQuery } from "./src/db/db_operation.mjs";
 import User from "./src/routes/User.mjs"
 import Institute from './src/routes/Institute.mjs'
-import fs from "fs";
-import { sendOtpSMS } from "./src/utility/otp.mjs";
+
 import { read_file } from "./src/utility/Excel.mjs";
 configDotenv();
 const app = express();
