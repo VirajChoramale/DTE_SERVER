@@ -58,11 +58,27 @@ const getEmployee =async(req,res)=>{
   const employee_query=`SELECT * FROM employee where id=${eid} and inst_id=${inst_id}`;
   const employee=await executeReadQuery(employee_query);
   return res.send({
-    "employeeData":employee
+    "employeeData":employee[0]
   })
+  
 
+}
+const getInstituteVaccancy=async(req,res)=>{
+  
+  const inst_id=req.params.id;
+  const vaccancy_query=`select dm.designation_name,crs.coursename,ivd.filled_post,ivd.sensction_post as sanction_post,ivd.vaccent_post from inst_vaccency_details as ivd 
+                  left join office_master as om on ivd.inst_id=om.id
+                  left join courses as crs on ivd.course_id=crs.id
+                  left join course_group as cg on ivd.course_group=cg.id
+                  left JOIN designation_master as dm on ivd.desigation_id=dm.id
+                  where inst_id=${inst_id} order by dm.priority;`;
+  const vaccancy_data=await executeReadQuery(vaccancy_query);
+ return res.send({
+  "vaccancy_data":vaccancy_data
+})
 }
 export{
     getDataCreateProfile,
-    getEmployee
+    getEmployee,
+    getInstituteVaccancy
 }
