@@ -54,6 +54,7 @@ const getDataCreateProfile=async(req,res)=>{
 }
 const getEmployee =async(req,res)=>{
   const inst_id=req.params.id;
+  
   const eid=req.query.empid
   const employee_query=`SELECT * FROM employee where id=${eid} and inst_id=${inst_id}`;
   const employee=await executeReadQuery(employee_query);
@@ -61,10 +62,11 @@ const getEmployee =async(req,res)=>{
     "employeeData":employee[0]
   })
   
+  
 
 }
 const getInstituteVaccancy=async(req,res)=>{
-  
+  console.log( req.headers['authorization']);
   const inst_id=req.params.id;
   const vaccancy_query=`select dm.designation_name,crs.coursename,ivd.filled_post,ivd.sensction_post as sanction_post,ivd.vaccent_post from inst_vaccency_details as ivd 
                   left join office_master as om on ivd.inst_id=om.id
@@ -77,8 +79,28 @@ const getInstituteVaccancy=async(req,res)=>{
   "vaccancy_data":vaccancy_data
 })
 }
+
+const getEmployeeList =async(req,res)=>{
+  const inst_id=req.params.id;
+  
+  const employee_query=`select emp.id,emp.title,dm.designation_name,crs.coursename,cg.course_group_name_eng as course_group from employee as emp
+left join designation_master as dm on emp.designation_id=dm.id
+left join course_group as cg on emp.course_group=cg.id
+left join courses as crs on emp.course_id=crs.id
+where emp.inst_id=${inst_id} order by dm.priority asc;`;
+  const employee=await executeReadQuery(employee_query);
+  return res.send({
+    "employeeData":employee
+  })
+  
+  
+
+}
+
+
 export{
     getDataCreateProfile,
     getEmployee,
-    getInstituteVaccancy
+    getInstituteVaccancy,
+    getEmployeeList,
 }
