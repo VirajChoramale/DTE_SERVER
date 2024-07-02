@@ -56,7 +56,11 @@ const getEmployee =async(req,res)=>{
   const inst_id=req.params.id;
   
   const eid=req.query.empid
-  const employee_query=`SELECT * FROM employee where id=${eid} and inst_id=${inst_id}`;
+  const employee_query=`SELECT emp.*,exp.appointment_type,exp.letter_no,exp.order_date,
+  exp.appointment_category,exp.appoint_cadre,exp.appoint_course,exp.designation,exp.pay_scale,
+  exp.promoted_under_cas,exp.cas_designation as new_designation 
+  FROM employee as emp left JOIN employee_experiance as exp on emp.id=exp.employee_id and exp.is_past=0 
+  where emp.id=${eid} and emp.inst_id=${inst_id} and exp.is_past=0`;
   const employee=await executeReadQuery(employee_query);
   return res.send({
     "employeeData":employee[0]
@@ -68,7 +72,15 @@ const getEmployee =async(req,res)=>{
 const getInstituteVaccancy=async(req,res)=>{
   console.log( req.headers['authorization']);
   const inst_id=req.params.id;
-  const vaccancy_query=`select dm.designation_name,crs.coursename,ivd.filled_post,ivd.sensction_post as sanction_post,ivd.vaccent_post from inst_vaccency_details as ivd 
+  const vaccancy_query=`select dm.designation_name,
+                 case when ivd.course_id=0 OR ivd.course_id=NULL then "-" 
+                 WHEN  ivd.course_id!=0 OR ivd.course_id!=NULL then crs.coursename
+                 END as coursename,
+                  case when dm.class='A' then 1
+                 WHEN dm.class='C' OR dm.class='D' then 2
+                 END as tech_type,
+                  ivd.filled_post,ivd.sensction_post as sanction_post,
+                  ivd.vaccent_post from inst_vaccency_details as ivd 
                   left join office_master as om on ivd.inst_id=om.id
                   left join courses as crs on ivd.course_id=crs.id
                   left join course_group as cg on ivd.course_group=cg.id
@@ -83,7 +95,11 @@ const getInstituteVaccancy=async(req,res)=>{
 const getEmployeeList =async(req,res)=>{
   const inst_id=req.params.id;
   
-  const employee_query=`select emp.id,emp.title,dm.designation_name,crs.coursename,cg.course_group_name_eng as course_group from employee as emp
+  const employee_query=`select case when dm.class='A' THEN 1 
+WHEN dm.class='C' OR dm.class='D' THEN 2 end  as tech_type 
+,emp.id,emp.title,emp.full_name,dm.designation_name,
+case when emp.course_id=0 OR emp.course_id=NULL then "-" END as coursename,
+crs.coursename,cg.course_group_name_eng as course_group from employee as emp
 left join designation_master as dm on emp.designation_id=dm.id
 left join course_group as cg on emp.course_group=cg.id
 left join courses as crs on emp.course_id=crs.id

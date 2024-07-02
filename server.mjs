@@ -1,4 +1,4 @@
-import express from "express";
+import express, { query } from "express";
 import cluster from "node:cluster";
 import cookieParser from "cookie-parser";
 import { cpus } from "node:os";
@@ -66,54 +66,36 @@ if (cluster.isPrimary) {
       })
     
       app.post("/read_excel", async (req, res) => {
-       
         try {
           // Call read_file with the correct file path
           const data = await read_file("./Non-Teaching_vaccancy.xlsx");
-          const unique_post=[]
-          const insert_data=[];
-         
+          const insert_query = `INSERT INTO C_class_vaccancy(id, is_inst, inst_code, post_marathi, class, post, sanction, filled, db_id) VALUES (?,  ?, ?, ?, ?, ?, ?, ?, ?)`;
+        
+          const json_data = [];
           data.forEach(elem => {
-                 if(!elem.post){
-                 elem.post=elem.post_marathi
-                 }
-                if(unique_post.indexOf(elem.post)===-1){
-                  unique_post.push(elem.post);
-                  const jdata={"post":elem.post,"class":elem.class,"post_name_marathi":elem.post_marathi}
-                  insert_data.push(jdata);
-                
-                } 
-
-           
+            json_data.push(elem);
           });
-       
+         
+          for (const data of json_data) {
+              
+              if(data.post==null){
+                data.post=data.post_marathi;
+              }
+              const dat = [data.id, data.is_inst, data.inst_code, data.post_marathi, data.class, data.post, data.sanctioned, data.filled, data.vaccant, data.db_id];
+              const resp = await executeWriteQuery(insert_query, dat);
+              console.log(resp.affectedRows)
+            
+           
           
-      const insert_query=`INSERT INTO designation_master (
-        designation_type, 
-        designation_name, 
-        designation_name_marathi, 
-        gazzet_type, 
-        class, 
-        entry_pay, 
-        entry_pay_level, 
-        appointment_mode, 
-        priority, 
-        total_retired_year
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        
-    for(let i=0;i<insert_data.length;i++){
-      const idata=[2,insert_data[i].post,insert_data[i]. post_name_marathi,2,insert_data[i].class,0,0, 2,2,58];
-      const res=await executeWriteQuery(insert_query,idata);
-      console.log(res)
-    }
-        
+           
+          }
         
         } catch (err) {
           console.error('Error:', err);
           res.status(500).send('An error occurred while reading the Excel file.');
         }
       });
-      app.post("/data_migration",async(req,res)=>{
+      app.post("/daddewdfe",async(req,res)=>{
                           const read_data=await executeReadQuery("SELECT * FROM `dte_post` GROUP BY post_eng;");
                         
                         const insert_query=`INSERT INTO designation_master (
