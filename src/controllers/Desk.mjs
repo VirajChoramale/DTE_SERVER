@@ -8,8 +8,12 @@ export const getOffices = async (req, res) => {
   });
 };
 export const getPost = async (req, res, next) => {
-  console.log("e");
+
   const inst_id = req.params.id;
+
+  if (inst_id == '' || inst_id == null) {
+    return res.send({});
+  }
   const post = await executeReadQuery(readQueries.getInstVaccancy(), inst_id);
 
   return res.send({
