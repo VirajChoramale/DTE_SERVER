@@ -1,6 +1,6 @@
 import { executeReadQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/Queries.mjs";
-const getDataCreateProfile = async (req, res) => {
+export const getDataCreateProfile = async (req, res) => {
   const inst_id = req.params.id;
   const typ = req.query.type;
   console.log(typ);
@@ -43,7 +43,8 @@ const getDataCreateProfile = async (req, res) => {
     deputationLocation: dteOffices,
   });
 };
-const getEmployee = async (req, res) => {
+
+export const getEmployee = async (req, res) => {
   const inst_id = req.params.id;
 
   const eid = req.query.empid;
@@ -57,11 +58,11 @@ const getEmployee = async (req, res) => {
     employeeData: employee[0],
   });
 };
-const insertEmployee = (req, res) => {
+export const insertEmployee = (req, res) => {
   console.log(req.body);
   res.send(req.body);
 };
-const getInstituteVaccancy = async (req, res) => {
+export const getInstituteVaccancy = async (req, res) => {
   const inst_id = req.params.id;
   const vaccancy_data = await executeReadQuery(
     readQueries.getInstVaccancy(),
@@ -72,7 +73,7 @@ const getInstituteVaccancy = async (req, res) => {
   });
 };
 
-const getEmployeeList = async (req, res) => {
+export const getEmployeeList = async (req, res) => {
   const inst_id = req.params.id;
   const employee = await executeReadQuery(
     readQueries.getInstEmployee(),
@@ -82,11 +83,11 @@ const getEmployeeList = async (req, res) => {
     employeeData: employee,
   });
 };
-
-export {
-  getDataCreateProfile,
-  getEmployee,
-  getInstituteVaccancy,
-  getEmployeeList,
-  insertEmployee,
+export const getPostCountEmp = async (req, res) => {
+  const post_id = req.params.id;
+  const count = await executeReadQuery(readQueries.getPostCountEmp(), post_id);
+  return res.send({
+    EmployeeCount: count[0].count,
+  });
+  console.log(count);
 };

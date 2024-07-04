@@ -26,6 +26,12 @@ readQueries.getInstCourses = () => {
         where ivd.inst_id=?
         GROUP by ivd.course_id,ivd.course_group;`;
 };
+readQueries.getCourses = () => {
+  return `select * from courses`;
+};
+readQueries.getCourse = () => {
+  return `select * from courses where id = ?`;
+};
 readQueries.getCourseGroups = () => {
   return "Select * from course_group";
 };
@@ -69,6 +75,14 @@ readQueries.getInstVaccancy = () => {
                   left join course_group as cg on ivd.course_group=cg.id
                   left JOIN designation_master as dm on ivd.desigation_id=dm.id
                   where inst_id=? order by dm.priority;`;
+};
+readQueries.getPostCountEmp = () => {
+  return `select count(id) as count from employee where post_id= ? and is_working=1`;
+};
+readQueries.updateTable = (table_name, colms, identifier, identifierValue) => {
+  const setClause = colms.map((col, index) => `${col} = ?`).join(", ");
+
+  return `update ${table_name} set ${setClause} where ${identifier} = ${identifierValue} `;
 };
 
 export { readQueries };
