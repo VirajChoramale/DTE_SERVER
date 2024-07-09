@@ -84,5 +84,12 @@ readQueries.updateTable = (table_name, colms, identifier, identifierValue) => {
 
   return `update ${table_name} set ${setClause} where ${identifier} = ${identifierValue} `;
 };
+//email template queries//
 
+readQueries.getEmailTemplates = () => {
+  return "SELECT * FROM email_template"
+}
+readQueries.getEmailTemplate = () => {
+  return "SELECT * FROM email_template where id=?"
+}
 export { readQueries };

@@ -10,12 +10,16 @@ import Institute from "./src/routes/Institute.mjs";
 import Desk from "./src/routes/Desk.mjs";
 import { read_file } from "./src/utility/Excel.mjs";
 import { readQueries } from "./src/db/Queries.mjs";
+import { Auth_req,verifyToken } from "./src/middleware/Auth.mjs";
+import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
+import { sendMail } from "./src/utility/Gmail.mjs";
+import {  SendGmail } from "./src/utility/sendGmail.mjs";
 configDotenv();
 const app = express();
 app.use(
   cors({
-    //origin:"http://http://192.168.2.244:3001:3001",
-    //credentials: true
+    origin:"http://localhost:5173",
+    credentials: true
   })
 );
 const PORT = process.env.PORT;
@@ -61,16 +65,34 @@ if (cluster.isPrimary) {
   app.use("/auth", User, (req, res) => {
     res.send();
   });
-  app.use("/Institute", Institute, () => {});
-  app.use("/Desk", Desk, () => {});
+  app.use("/Institute",verifyToken,Auth_req("INST"), Institute, () => {});
+  app.use("/Desk", Desk, () => { });
+  app.post("/logout", (req, res) => {
+    res.cookie("uid", {
+      expires: new Date(0), 
+    });
+    res.cookie("oid", {
+      expires: new Date(0), 
+    });
+    res.cookie("eid", {
+      expires: new Date(0), 
+    });
+    
+    res.send();
+  })
   app.get("/test/:type", (req, res) => {
     res.json(req.params.type);
   });
-  app.get("/test_c", (req, res) => {
-    res.cookie("test", 10123).send();
+  app.get("/gmail",async (req, res) => {
+    res.send(await SendGmail(2,"viraj.choramale@bynaric.in",["Viraj","test"]));
   });
-  app.get("/get_c", (req, res) => {
-    console.log(req.cookies);
+  app.post("/bcrypt_text", async (req, res) => {
+    bcrypt_text
+    const bcrypted_text = await bcrypt_text(req.body.text);
+    res.send({
+      encrypted_text: bcrypted_text
+   })
+   
   });
   app.get("/test", (req, res) => {});
   app.post("/read_excel", async (req, res) => {

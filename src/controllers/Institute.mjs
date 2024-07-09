@@ -63,7 +63,7 @@ export const insertEmployee = (req, res) => {
   res.send(req.body);
 };
 export const getInstituteVaccancy = async (req, res) => {
-  const inst_id = req.params.id;
+  const inst_id = req.user.inst_id;
   const vaccancy_data = await executeReadQuery(
     readQueries.getInstVaccancy(),
     inst_id
@@ -74,7 +74,8 @@ export const getInstituteVaccancy = async (req, res) => {
 };
 
 export const getEmployeeList = async (req, res) => {
-  const inst_id = req.params.id;
+ 
+  const inst_id = req.user.inst_id;
   const employee = await executeReadQuery(
     readQueries.getInstEmployee(),
     inst_id
@@ -89,5 +90,5 @@ export const getPostCountEmp = async (req, res) => {
   return res.send({
     EmployeeCount: count[0].count,
   });
-  console.log(count);
+ 
 };

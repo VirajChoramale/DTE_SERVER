@@ -2,6 +2,7 @@ import crypto from "crypto";
 import https from "https";
 import qs from "qs";
 import { update_table } from "./Sql_Querries.mjs";
+import { SendGmail } from "./sendGmail.mjs";
 
 function generateOtp() {
   const length = Math.floor(Math.random() * 3) + 2;
@@ -25,16 +26,18 @@ function generateKey(message) {
     .update(`${username}${senderid}${message}${deptSecureKey}`)
     .digest("hex");
 }
-
-async function sendOtpSMS(mobileno, uname) {
-  const OTP = generateOtp();
+ 
+async function sendOtpSMS(mobileno, uname,email,name){ 
+  const OTP = 12345 //generateOtp();
   const message = `Dear S/M, OTP for EMIS is :  ${OTP} Thank you , DTE, Mumbai`;
-
+  const emailResponse = await SendGmail(2, email, [name, OTP]);
+  // console.log(emailResponse);
   const encryp_password = crypto
     .createHash("sha1")
     .update(password)
     .digest("hex");
   const key = generateKey(message);
+
   const sql = await update_table(
     "users_new",
     "username",
