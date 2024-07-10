@@ -45,38 +45,41 @@ const login = async (req, res, next) => {
   //console.log(req.body.username,req.body.password);
   if (resp.code == 200) {
     const uname = resp.data[0].username;
-    const token =  jsonwebtoken.sign({ uname }, HmacKey, {
+    const token = jsonwebtoken.sign({ uname }, HmacKey, {
       expiresIn: "120m",
       algorithm: "HS256",
     });
     let sms_resp = null;
     const resp_arr = {};
-    await sendOtpSMS(resp.data[0].mobile, resp.data[0].username, resp.data[0].email, resp.data[0].name,)
+    await sendOtpSMS(
+      resp.data[0].mobile,
+      resp.data[0].username,
+      resp.data[0].email,
+      resp.data[0].name
+    )
       .then((res) => {
+        console.log(res);
         const resp_arr = res.split(",");
         sms_resp = resp_arr[0];
       })
       .catch((e) => console.log("error in sms api" + e));
 
     //console.log(resp.data[0].mobile)
-    
 
     if (sms_resp === "402") {
       resp_arr.msg = `OTP has been successfully sent on ${resp.data[0].mobile} and ${resp.data[0].email}`;
       const userPayLoad = {
-        token:token
-      }
-      res.cookie("oid",  JSON.stringify(userPayLoad), {
+        token: token,
+      };
+      res.cookie("oid", JSON.stringify(userPayLoad), {
         expire: 10000 + Date.now(),
         httpOnly: true,
-        secure: true,
-       
+        secure: false,
       });
-      
     } else {
       resp_arr.msg = `ERROR!! while sending the OTP, Kindly Contact DTE-IT Cell`;
     }
-    res.status(200).send({ msg: resp_arr.msg, res: resp.res});
+    res.status(200).send({ msg: resp_arr.msg, res: resp.res });
     next();
   } else {
     res.json(resp);
@@ -89,7 +92,7 @@ const verify_otp = async (req, res) => {
   );
   if (tes[0].latest_otp == req.body.otp) {
     const token = jsonwebtoken.sign(
-      { uname: req.user.uname, role: tes[0].role,inst_id:tes[0]['inst_id']},
+      { uname: req.user.uname, role: tes[0].role, inst_id: tes[0]["inst_id"] },
       process.env.HMAC
     );
     const sql = await update_table(
@@ -101,17 +104,16 @@ const verify_otp = async (req, res) => {
     );
     const userPayLoad = {
       token: token,
-      role:tes[0].role 
-    }
+      role: tes[0].role,
+    };
 
     res.cookie("eid", JSON.stringify(userPayLoad), {
       httpOnly: true,
-      secure:true
+      secure: false,
     });
     res.status(200).json({
       msg: "Validated",
-      role:tes[0].role 
-      
+      role: tes[0].role,
     });
   } else {
     res.status(200).json({

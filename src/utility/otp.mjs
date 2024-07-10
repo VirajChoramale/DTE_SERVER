@@ -26,11 +26,11 @@ function generateKey(message) {
     .update(`${username}${senderid}${message}${deptSecureKey}`)
     .digest("hex");
 }
- 
-async function sendOtpSMS(mobileno, uname,email,name){ 
-  const OTP = 12345 //generateOtp();
+
+async function sendOtpSMS(mobileno, uname, email, name) {
+  const OTP = 12345; //generateOtp();
   const message = `Dear S/M, OTP for EMIS is :  ${OTP} Thank you , DTE, Mumbai`;
-  const emailResponse = await SendGmail(2, email, [name, OTP]);
+  // const emailResponse = SendGmail(2, email, [name, OTP]);
   // console.log(emailResponse);
   const encryp_password = crypto
     .createHash("sha1")

@@ -1,26 +1,30 @@
-import { createTransport } from 'nodemailer'
+import { createTransport } from "nodemailer";
 import { configDotenv } from "dotenv";
-import { response } from 'express';
 configDotenv();
 
-//Do Not Modify this Code//
+// Do Not Modify this Code //
 const transporter = createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS 
-    }
-})
+  host: "smtp.gmail.com",
+  port: 465,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
 
 export const sendMail = async (to, subject, body) => {
-   console.log(subject)
+  try {
+    console.log("in");
     const response = await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: to,
-        subject: "subject",
-        html: body
-        
+      from: "donotreply_mis@dtemaharashtra.gov.in",
+      to: "viraj.choramale@bynaric.in",
+      subject: "subject",
+      html: "ters",
     });
-    return response;
-}
 
+    return response;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};
