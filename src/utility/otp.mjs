@@ -4,6 +4,17 @@ import qs from "qs";
 import { update_table } from "./Sql_Querries.mjs";
 import { SendGmail } from "./sendGmail.mjs";
 
+export const genrateRandomText= async (length)=> {
+  
+  const characters =
+    "ABCDEFG+HIJKL#MNOPQR%=STUVWXYZab*cd=!efghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return  result;
+}
 function generateOtp() {
   const length = Math.floor(Math.random() * 3) + 2;
   const characters =
