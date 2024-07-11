@@ -10,16 +10,25 @@ import Institute from "./src/routes/Institute.mjs";
 import Desk from "./src/routes/Desk.mjs";
 import { read_file } from "./src/utility/Excel.mjs";
 import { readQueries } from "./src/db/Queries.mjs";
-import { Auth_req,verifyToken } from "./src/middleware/Auth.mjs";
+import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
 import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
 import { sendMail } from "./src/utility/Gmail.mjs";
-import {  SendGmail } from "./src/utility/sendGmail.mjs";
+import { SendGmail } from "./src/utility/sendGmail.mjs";
 configDotenv();
 const app = express();
 app.use(
   cors({
-    origin:"http://localhost:5173",
-    credentials: true
+    origin: [
+      "http://localhost:5173",
+      "http://192.168.3.52:5173",
+      "http://192.168.0.109",
+      "http://192.168.2.244",
+      "http://49.248.37.122:5173",
+      "http://49.248.37.122",
+    ],
+    credentials: true, // Allow cookies for cross-origin requests (if applicable)
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"], // Allowed headers
   })
 );
 const PORT = process.env.PORT;
@@ -65,34 +74,41 @@ if (cluster.isPrimary) {
   app.use("/auth", User, (req, res) => {
     res.send();
   });
-  app.use("/Institute",verifyToken,Auth_req("INST"), Institute, () => {});
-  app.use("/Desk", Desk, () => { });
+  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});
+  app.get("/server_running", (req, res) => {
+    res.status(200).send({
+      msg: `Server Running on Port==>${PORT}`,
+    });
+  });
+  app.use("/Desk", Desk, () => {});
   app.post("/logout", (req, res) => {
     res.cookie("uid", {
-      expires: new Date(0), 
+      expires: new Date(0),
     });
     res.cookie("oid", {
-      expires: new Date(0), 
+      expires: new Date(0),
     });
     res.cookie("eid", {
-      expires: new Date(0), 
+      expires: new Date(0),
     });
-    
+
     res.send();
-  })
+  });
   app.get("/test/:type", (req, res) => {
     res.json(req.params.type);
   });
-  app.get("/gmail",async (req, res) => {
-    res.send(await SendGmail(2,"viraj.choramale@bynaric.in",["Viraj","22"]));
+
+  app.get("/gmail", async (req, res) => {
+    res.send(
+      await SendGmail(2, "viraj.choramale@bynaric.in", ["Viraj", "test"])
+    );
   });
   app.post("/bcrypt_text", async (req, res) => {
-    bcrypt_text
+    bcrypt_text;
     const bcrypted_text = await bcrypt_text(req.body.text);
     res.send({
-      encrypted_text: bcrypted_text
-   })
-   
+      encrypted_text: bcrypted_text,
+    });
   });
   app.get("/test", (req, res) => {});
   app.post("/read_excel", async (req, res) => {
@@ -100,7 +116,6 @@ if (cluster.isPrimary) {
       // Call read_file with the correct file path
       const data = await read_file("./Non-Teaching_vaccancy.xlsx");
       const insert_query = `INSERT INTO C_class_vaccancy(id, is_inst, inst_code, post_marathi, class, post, sanction, filled, db_id) VALUES (?,  ?, ?, ?, ?, ?, ?, ?, ?)`;
-
       const json_data = [];
       data.forEach((elem) => {
         json_data.push(elem);
