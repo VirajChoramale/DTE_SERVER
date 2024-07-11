@@ -79,6 +79,7 @@ const login = async (req, res, next) => {
         expire: 10000 + Date.now(),
         httpOnly: process.env.PRODUCTION == "false" ? false : true,
         secure: process.env.PRODUCTION == "false" ? false : true,
+        SameSite: "None",
       });
     } else {
       resp_arr.msg = `ERROR!! while sending the OTP, Kindly Contact DTE-IT Cell`;
@@ -114,6 +115,7 @@ const verify_otp = async (req, res) => {
     res.cookie("eid", JSON.stringify(userPayLoad), {
       httpOnly: process.env.PRODUCTION == "false" ? false : true,
       secure: process.env.PRODUCTION == "false" ? false : true,
+      SameSite: "None",
     });
     res.status(200).json({
       msg: "Validated",

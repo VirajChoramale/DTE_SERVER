@@ -23,6 +23,8 @@ app.use(
       "http://192.168.3.52:5173",
       "http://192.168.0.109",
       "http://192.168.2.244",
+      "http://49.248.37.122:5173",
+      "http://49.248.37.122",
     ],
     credentials: true, // Allow cookies for cross-origin requests (if applicable)
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
@@ -73,6 +75,11 @@ if (cluster.isPrimary) {
     res.send();
   });
   app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});
+  app.get("/server_running", (req, res) => {
+    res.status(200).send({
+      msg: `Server Running on Port==>${PORT}`,
+    });
+  });
   app.use("/Desk", Desk, () => {});
   app.post("/logout", (req, res) => {
     res.cookie("uid", {
