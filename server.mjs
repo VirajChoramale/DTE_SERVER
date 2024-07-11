@@ -84,7 +84,7 @@ if (cluster.isPrimary) {
     res.json(req.params.type);
   });
   app.get("/gmail",async (req, res) => {
-    res.send(await SendGmail(2,"viraj.choramale@bynaric.in",["Viraj","test"]));
+    res.send(await SendGmail(2,"viraj.choramale@bynaric.in",["Viraj","22"]));
   });
   app.post("/bcrypt_text", async (req, res) => {
     bcrypt_text

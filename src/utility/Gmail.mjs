@@ -17,9 +17,9 @@ export const sendMail = async (to, subject, body) => {
     console.log("in");
     const response = await transporter.sendMail({
       from: "donotreply_mis@dtemaharashtra.gov.in",
-      to: "viraj.choramale@bynaric.in",
-      subject: "subject",
-      html: "ters",
+      to: "virajchormale71@gmail.com",
+      subject: "test",
+      html: "test msg",
     });
 
     return response;
