@@ -1,10 +1,14 @@
 import { bcrypt_text, compare_bcrypt } from "../utility/bcrypt_js.mjs";
 import jsonwebtoken from "jsonwebtoken";
+import { configDotenv } from "dotenv";
+
 import { sendOtpSMS } from "../utility/otp.mjs";
 import { select_from_table } from "../utility/Sql_Querries.mjs";
 const HmacKey = process.env.HMAC;
 import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
 import { update_table } from "../utility/Sql_Querries.mjs";
+configDotenv();
+
 const verify_user = async (username, password) => {
   const user = `select name,username,password,email,mobile from users_new where username='${username}'`;
   try {
@@ -73,8 +77,8 @@ const login = async (req, res, next) => {
       };
       res.cookie("oid", JSON.stringify(userPayLoad), {
         expire: 10000 + Date.now(),
-        httpOnly: true,
-        secure: false,
+        httpOnly: process.env.PRODUCTION == "false" ? false : true,
+        secure: process.env.PRODUCTION == "false" ? false : true,
       });
     } else {
       resp_arr.msg = `ERROR!! while sending the OTP, Kindly Contact DTE-IT Cell`;
@@ -108,8 +112,8 @@ const verify_otp = async (req, res) => {
     };
 
     res.cookie("eid", JSON.stringify(userPayLoad), {
-      httpOnly: true,
-      secure: false,
+      httpOnly: process.env.PRODUCTION == "false" ? false : true,
+      secure: process.env.PRODUCTION == "false" ? false : true,
     });
     res.status(200).json({
       msg: "Validated",

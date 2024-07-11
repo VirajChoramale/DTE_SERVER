@@ -108,7 +108,6 @@ if (cluster.isPrimary) {
       // Call read_file with the correct file path
       const data = await read_file("./Non-Teaching_vaccancy.xlsx");
       const insert_query = `INSERT INTO C_class_vaccancy(id, is_inst, inst_code, post_marathi, class, post, sanction, filled, db_id) VALUES (?,  ?, ?, ?, ?, ?, ?, ?, ?)`;
-
       const json_data = [];
       data.forEach((elem) => {
         json_data.push(elem);
