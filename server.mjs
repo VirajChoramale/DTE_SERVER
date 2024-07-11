@@ -18,8 +18,15 @@ configDotenv();
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+    origin: [
+      "http://localhost:5173",
+      "http://192.168.3.52:5173",
+      "http://192.168.0.109",
+      "http://192.168.2.244",
+    ],
+    credentials: true, // Allow cookies for cross-origin requests (if applicable)
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"], // Allowed headers
   })
 );
 const PORT = process.env.PORT;
