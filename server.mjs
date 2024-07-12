@@ -41,7 +41,7 @@ if (cluster.isPrimary) {
   // Fork workers for each available CPU
   const availableCPUs = cpus();
   // availableCPUs.forEach((cpu, index) => forkWorker(index));
-  for (let i = 1; i < 3; i++) {
+  for (let i = 1; i < 2; i++) {
     forkWorker(i);
   }
   cluster.on("exit", (worker, code, signal) => {
