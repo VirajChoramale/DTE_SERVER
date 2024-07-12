@@ -1,5 +1,5 @@
 import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
-import { readQueries } from "../db/Queries.mjs";
+import { readQueries } from "../db/readQueries.mjs";
 
 export const getOffices = async (req, res) => {
   const offices = await executeReadQuery(readQueries.getOffices());

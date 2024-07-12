@@ -1,7 +1,6 @@
-//for sending gmail using Gmail template
 
 import { executeReadQuery } from "../db/db_operation.mjs"
-import { readQueries } from "../db/Queries.mjs"
+import { readQueries } from "../db/readQueries.mjs"
 import { sendMail } from "./Gmail.mjs";
 
 export const SendGmail = async (template_id, to_email,variables) => {

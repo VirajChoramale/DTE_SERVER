@@ -1,18 +1,19 @@
 import { bcrypt_text, compare_bcrypt } from "../utility/bcrypt_js.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import { configDotenv } from "dotenv";
-
 import { sendOtpSMS } from "../utility/otp.mjs";
-import { select_from_table } from "../utility/Sql_Querries.mjs";
-const HmacKey = process.env.HMAC;
 import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
+import { readQueries } from "../db/readQueries.mjs";
 import { update_table } from "../utility/Sql_Querries.mjs";
+import { writeQueries } from "../db/writeQueries.mjs";
 configDotenv();
+const HmacKey = process.env.HMAC;
 
 const verify_user = async (username, password) => {
-  const user = `select name,username,password,email,mobile from users_new where username='${username}'`;
+
   try {
-    const result = await executeReadQuery(user);
+    const result = await executeReadQuery(readQueries.getUserInfo(), username);
+    
 
     if (result.length > 0) {
       const authinticate = compare_bcrypt(password, result[0]["password"]);
@@ -46,11 +47,11 @@ const verify_user = async (username, password) => {
 };
 const login = async (req, res, next) => {
   const resp = await verify_user(req.body.username, req.body.password);
-  //console.log(req.body.username,req.body.password);
+  
   if (resp.code == 200) {
     const uname = resp.data[0].username;
     const token = jsonwebtoken.sign({ uname }, HmacKey, {
-      expiresIn: "15m",
+      expiresIn: "5m",
       algorithm: "HS256",
     });
     let sms_resp = null;
@@ -62,36 +63,41 @@ const login = async (req, res, next) => {
       resp.data[0].name
     )
       .then((res) => {
-        console.log(res);
         const resp_arr = res.split(",");
         sms_resp = resp_arr[0];
       })
       .catch((e) => console.log("error in sms api" + e));
 
-    console.log(resp.data[0].mobile);
-
     if (sms_resp === "402") {
       resp_arr.msg = `OTP has been successfully sent on ${resp.data[0].mobile} and ${resp.data[0].email}`;
+      resp_arr.statusCode = 200;
       res.setHeader("Authorization", `Bearer ${token}`);
     } else {
       resp_arr.msg = `ERROR!! while sending the OTP, Kindly Contact DTE-IT Cell`;
+      resp_arr.statusCode = 501;
     }
-    res.status(200).send({ msg: resp_arr.msg, res: resp.res });
-    next();
+    res.status(200).send(resp_arr);
+    
   } else {
+   
     res.json(resp);
   }
 };
 
 const verify_otp = async (req, res) => {
-  const tes = await executeReadQuery(
-    `select latest_otp,password,role,inst_id from users_new where username='${req.user.uname}'`
-  );
+
+  const tes = await executeReadQuery(readQueries.getUserInfo(), req.user.uname);
+  
   if (tes[0].latest_otp == req.body.otp) {
     const token = jsonwebtoken.sign(
       { uname: req.user.uname, role: tes[0].role, inst_id: tes[0]["inst_id"] },
-      process.env.HMAC
+      HmacKey,
+      {
+        expiresIn: "120m",
+        algorithm: "HS256",
+      }
     );
+
     const sql = await update_table(
       "users_new",
       "username",
@@ -99,10 +105,7 @@ const verify_otp = async (req, res) => {
       ["latest_otp"],
       [""]
     );
-    const userPayLoad = {
-      token: token,
-      role: tes[0].role,
-    };
+  
     res.setHeader("Authorization", `Bearer ${token}`);
     res.setHeader("role", `role ${tes[0].role}`);
     res.status(200).json({

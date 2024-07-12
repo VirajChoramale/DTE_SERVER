@@ -1,36 +1,29 @@
-import jsonwebtoken from "jsonwebtoken";
-import { verify_user } from "../controllers/Login.mjs";
-import cookieParser from "cookie-parser";
+import jsonwebtoken, { decode } from "jsonwebtoken";
 
 const verifyToken = async (req, res, next) => {
+ 
   const token = req.headers.authorization.split(" ")[1];
-  console.log(token);
-  try {
-    if (!token) {
-      console.log(token);
+  if (token) {
+    try {
+      const { exp } = jsonwebtoken.decode(token);
+      if (exp && exp > Math.floor(Date.now() / 1000)) {
+        const decodedToken = jsonwebtoken.verify(token, process.env.HMAC);
+     
+        req.user = decodedToken;
+        next();
+      }
+    } catch (error) {
       return res.send({
-        msg: "Token Error",
+        //ip blacklisting logic
+        msg: `Token Verification Failed+${error.message}`,
         status: 302,
       });
     }
-    const decoded = jsonwebtoken.verify(token, process.env.HMAC);
-
-    req.user = decoded;
-    next();
-  } catch (error) {
-    // Check for specific errors
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({
-        code: 302,
-        msg: "Token expired",
-      });
-    } else if (error.name == "SyntaxError") {
-      return;
-    }
-
-    // Handle other JWT errors
-    console.error("Error verifying token:", error);
-    return res.status(403).redirect("/");
+  } else {
+    return res.send({
+      msg: "Missing Token",
+      status: 302,
+    });
   }
 };
 

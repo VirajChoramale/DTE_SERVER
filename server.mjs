@@ -1,6 +1,5 @@
 import express, { query } from "express";
 import cluster from "node:cluster";
-import cookieParser from "cookie-parser";
 import { cpus } from "node:os";
 import cors from "cors";
 import { configDotenv } from "dotenv";
@@ -46,7 +45,6 @@ app.use(
   })
 );
 const PORT = process.env.PORT;
-app.use(cookieParser());
 let activeWorkers = new Map();
 
 if (cluster.isPrimary) {

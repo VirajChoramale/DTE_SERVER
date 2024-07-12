@@ -1,5 +1,5 @@
 import { executeReadQuery } from "../db/db_operation.mjs";
-import { readQueries } from "../db/Queries.mjs";
+import { readQueries } from "../db/readQueries.mjs";
 export const getDataCreateProfile = async (req, res) => {
   const inst_id = req.params.id;
   const typ = req.query.type;
@@ -74,7 +74,6 @@ export const getInstituteVaccancy = async (req, res) => {
 };
 
 export const getEmployeeList = async (req, res) => {
- 
   const inst_id = req.user.inst_id;
   const employee = await executeReadQuery(
     readQueries.getInstEmployee(),
@@ -86,9 +85,9 @@ export const getEmployeeList = async (req, res) => {
 };
 export const getPostCountEmp = async (req, res) => {
   const post_id = req.params.id;
+
   const count = await executeReadQuery(readQueries.getPostCountEmp(), post_id);
   return res.send({
     EmployeeCount: count[0].count,
   });
- 
 };

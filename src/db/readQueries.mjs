@@ -92,4 +92,8 @@ readQueries.getEmailTemplates = () => {
 readQueries.getEmailTemplate = () => {
   return "SELECT * FROM email_template where id=?"
 }
+readQueries.getUserInfo = () => {
+  //get user information from usertable
+  return "select latest_otp,role,inst_id,username,password,email,mobile from users_new where username=?"
+}
 export { readQueries };
