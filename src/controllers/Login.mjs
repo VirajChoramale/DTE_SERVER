@@ -111,7 +111,7 @@ const verify_otp = async (req, res) => {
       token: token,
       role: tes[0].role,
     };
-
+    res.header('Authorization', `Bearer ${userPayLoad}`);
     res.cookie("eid", JSON.stringify(userPayLoad), {
       httpOnly: process.env.PRODUCTION == "false" ? false : true,
       secure: process.env.PRODUCTION == "false" ? false : true,
