@@ -50,7 +50,7 @@ const login = async (req, res, next) => {
   if (resp.code == 200) {
     const uname = resp.data[0].username;
     const token = jsonwebtoken.sign({ uname }, HmacKey, {
-      expiresIn: "120m",
+      expiresIn: "15m",
       algorithm: "HS256",
     });
     let sms_resp = null;
@@ -68,19 +68,11 @@ const login = async (req, res, next) => {
       })
       .catch((e) => console.log("error in sms api" + e));
 
-    //console.log(resp.data[0].mobile)
+    console.log(resp.data[0].mobile);
 
     if (sms_resp === "402") {
       resp_arr.msg = `OTP has been successfully sent on ${resp.data[0].mobile} and ${resp.data[0].email}`;
-      const userPayLoad = {
-        token: token,
-      };
-      res.cookie("oid", JSON.stringify(userPayLoad), {
-        expire: 10000 + Date.now(),
-        httpOnly: process.env.PRODUCTION == "false" ? false : true,
-        secure: process.env.PRODUCTION == "false" ? false : true,
-        SameSite: "None",
-      });
+      res.setHeader("Authorization", `Bearer ${token}`);
     } else {
       resp_arr.msg = `ERROR!! while sending the OTP, Kindly Contact DTE-IT Cell`;
     }
@@ -111,12 +103,8 @@ const verify_otp = async (req, res) => {
       token: token,
       role: tes[0].role,
     };
-    res.header('Authorization', `Bearer ${userPayLoad}`);
-    res.cookie("eid", JSON.stringify(userPayLoad), {
-      httpOnly: process.env.PRODUCTION == "false" ? false : true,
-      secure: process.env.PRODUCTION == "false" ? false : true,
-      SameSite: "None",
-    });
+    res.setHeader("Authorization", `Bearer ${token}`);
+    res.setHeader("role", `role ${tes[0].role}`);
     res.status(200).json({
       msg: "Validated",
       role: tes[0].role,

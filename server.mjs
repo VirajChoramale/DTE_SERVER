@@ -12,15 +12,15 @@ import { read_file } from "./src/utility/Excel.mjs";
 import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
 import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
 import { SendGmail } from "./src/utility/sendGmail.mjs";
-import crypto from 'crypto';
+import crypto from "crypto";
 import { genrateRandomText } from "./src/utility/otp.mjs";
 configDotenv();
 const app = express();
 const KeyGen = async () => {
-   const key= 'oYkI2v4ObFxrP/9GGtxdsxnqtyk9ZITxbhX4WFecQoI='
+  const key = "oYkI2v4ObFxrP/9GGtxdsxnqtyk9ZITxbhX4WFecQoI=";
 
-  return key
-}
+  return key;
+};
 
 app.use(
   cors({
@@ -28,13 +28,21 @@ app.use(
       "http://localhost:5173",
       "http://192.168.3.52:5173",
       "http://192.168.0.109",
-      "http://192.168.2.244",
+      "http://192.168.2.244:5175",
       "http://49.248.37.122:5173",
       "http://49.248.37.122",
     ],
     credentials: true, // Allow cookies for cross-origin requests (if applicable)
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"], // Allowed headers
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "token",
+      "role",
+    ],
+    exposedHeaders: ["token", "Authorization", "role"],
+    // Allowed headers
   })
 );
 const PORT = process.env.PORT;
@@ -47,7 +55,7 @@ if (cluster.isPrimary) {
   // Fork workers for each available CPU
   const availableCPUs = cpus();
   // availableCPUs.forEach((cpu, index) => forkWorker(index));
-  for (let i = 1; i < 3; i++) {
+  for (let i = 1; i < 2; i++) {
     forkWorker(i);
   }
   cluster.on("exit", (worker, code, signal) => {
@@ -76,7 +84,6 @@ if (cluster.isPrimary) {
   }
 } else {
   app.use(express.json());
- 
 
   app.use("/auth", User, (req, res) => {
     res.send();
@@ -88,6 +95,10 @@ if (cluster.isPrimary) {
     });
   });
   app.use("/Desk", Desk, () => {});
+  app.post("/testHeader", (req, res) => {
+    res.setHeader("Authorization", `Bearer ${10012}`);
+    res.send("token set");
+  });
   app.post("/logout", (req, res) => {
     res.cookie("uid", {
       expires: new Date(0),
@@ -112,17 +123,15 @@ if (cluster.isPrimary) {
   });
   app.post("/bcrypt_text", async (req, res) => {
     bcrypt_text;
-    const bcrypted_text =  bcrypt_text(req.body.text);
+    const bcrypted_text = bcrypt_text(req.body.text);
     res.send({
       encrypted_text: bcrypted_text,
     });
   });
-  app.get("/test", (req, res) => { });
-  app.post('/getKeyRedux', async (req, res) => {
-   
-   
-    res.json({ key:await KeyGen()});
-});
+  app.get("/test", (req, res) => {});
+  app.post("/getKeyRedux", async (req, res) => {
+    res.json({ key: await KeyGen() });
+  });
   app.post("/read_excel", async (req, res) => {
     try {
       // Call read_file with the correct file path
