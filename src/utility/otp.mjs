@@ -4,6 +4,17 @@ import qs from "qs";
 import { update_table } from "./Sql_Querries.mjs";
 import { SendGmail } from "./sendGmail.mjs";
 
+export const genrateRandomText= async (length)=> {
+  
+  const characters =
+    "ABCDEFG+HIJKL#MNOPQR%=STUVWXYZab*cd=!efghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return  result;
+}
 function generateOtp() {
   const length = Math.floor(Math.random() * 3) + 2;
   const characters =
@@ -30,8 +41,8 @@ function generateKey(message) {
 async function sendOtpSMS(mobileno, uname, email, name) {
   const OTP = 12345; //generateOtp();
   const message = `Dear S/M, OTP for EMIS is :  ${OTP} Thank you , DTE, Mumbai`;
-  // const emailResponse = SendGmail(2, email, [name, OTP]);
-  // console.log(emailResponse);
+  const emailResponse = SendGmail(2, email, [name, OTP]);
+  console.log(emailResponse);
   const encryp_password = crypto
     .createHash("sha1")
     .update(password)

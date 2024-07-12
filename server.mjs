@@ -9,13 +9,19 @@ import User from "./src/routes/User.mjs";
 import Institute from "./src/routes/Institute.mjs";
 import Desk from "./src/routes/Desk.mjs";
 import { read_file } from "./src/utility/Excel.mjs";
-import { readQueries } from "./src/db/Queries.mjs";
 import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
 import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
-import { sendMail } from "./src/utility/Gmail.mjs";
 import { SendGmail } from "./src/utility/sendGmail.mjs";
+import crypto from 'crypto';
+import { genrateRandomText } from "./src/utility/otp.mjs";
 configDotenv();
 const app = express();
+const KeyGen = async () => {
+   const key= 'oYkI2v4ObFxrP/9GGtxdsxnqtyk9ZITxbhX4WFecQoI='
+
+  return key
+}
+
 app.use(
   cors({
     origin: [
@@ -70,6 +76,7 @@ if (cluster.isPrimary) {
   }
 } else {
   app.use(express.json());
+ 
 
   app.use("/auth", User, (req, res) => {
     res.send();
@@ -97,6 +104,7 @@ if (cluster.isPrimary) {
   app.get("/test/:type", (req, res) => {
     res.json(req.params.type);
   });
+
   app.get("/gmail", async (req, res) => {
     res.send(
       await SendGmail(2, "viraj.choramale@bynaric.in", ["Viraj", "test"])
@@ -104,12 +112,17 @@ if (cluster.isPrimary) {
   });
   app.post("/bcrypt_text", async (req, res) => {
     bcrypt_text;
-    const bcrypted_text = await bcrypt_text(req.body.text);
+    const bcrypted_text =  bcrypt_text(req.body.text);
     res.send({
       encrypted_text: bcrypted_text,
     });
   });
-  app.get("/test", (req, res) => {});
+  app.get("/test", (req, res) => { });
+  app.post('/getKeyRedux', async (req, res) => {
+   
+   
+    res.json({ key:await KeyGen()});
+});
   app.post("/read_excel", async (req, res) => {
     try {
       // Call read_file with the correct file path
