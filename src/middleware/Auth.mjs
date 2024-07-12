@@ -3,16 +3,9 @@ import { verify_user } from "../controllers/Login.mjs";
 import cookieParser from "cookie-parser";
 
 const verifyToken = async (req, res, next) => {
-  if (req.cookies.eid.expires) {
-    return res.send({
-      msg: "Token Error",
-      status: 302,
-    });
-  }
-  const udata = JSON.parse(req.cookies.eid);
+  const token = req.headers.authorization.split(" ")[1];
+  console.log(token);
   try {
-    const token = udata.token;
-
     if (!token) {
       console.log(token);
       return res.send({
@@ -28,7 +21,7 @@ const verifyToken = async (req, res, next) => {
     // Check for specific errors
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({
-        code: 401,
+        code: 302,
         msg: "Token expired",
       });
     } else if (error.name == "SyntaxError") {
@@ -41,34 +34,6 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-const verifyOtpToken = async (req, res, next) => {
-  const udata = JSON.parse(req.cookies.oid);
-
-  const token = udata.token;
-
-  if (!token) {
-    return res.send({
-      msg: "Token Error",
-      status: 302,
-    });
-  }
-
-  try {
-    const decoded = jsonwebtoken.verify(token, process.env.HMAC);
-
-    req.user = decoded;
-    next();
-  } catch (error) {
-    // Check for specific errors
-
-    return res.send({
-      msg: "Token Expired",
-      status: 302,
-    });
-
-    // Handle other JWT errors
-  }
-};
 const Auth_req = (role) => {
   return (req, res, next) => {
     if (req.user.role != role) {
@@ -82,4 +47,4 @@ const Auth_req = (role) => {
   };
 };
 
-export { verifyToken, verifyOtpToken, Auth_req };
+export { verifyToken, Auth_req };
