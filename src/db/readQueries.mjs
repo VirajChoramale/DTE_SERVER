@@ -76,7 +76,20 @@ readQueries.getInstVaccancy = () => {
                   left JOIN designation_master as dm on ivd.desigation_id=dm.id
                   where inst_id=? order by dm.priority;`;
 };
+readQueries.getPostDetails = () => {
+  //get post details
+  return `SELECT ivd.id,ivd.course_id,ivd.course_level_id,ivd.course_group,ivd.desigation_id,desig.designation_name,crs.coursename,crs.course_marathi_name,cg.course_group_name_eng,cg.course_grp_marathi
+FROM inst_vaccency_details as ivd
+left join designation_master as desig on ivd.desigation_id=desig.id
+left join course_group as cg on ivd.course_group=cg.id
+left join courses as crs on ivd.course_id=crs.id
+where ivd.id=?;`
+}
+readQueries.getPost = () => {
+  return "select * from inst_vaccency_details where id =?"
+}
 readQueries.getPostCountEmp = () => {
+  //get post wise employee count
   return `select count(id) as count from employee where post_id= ? and is_working=1`;
 };
 readQueries.updateTable = (table_name, colms, identifier, identifierValue) => {
@@ -95,5 +108,16 @@ readQueries.getEmailTemplate = () => {
 readQueries.getUserInfo = () => {
   //get user information from usertable
   return "select latest_otp,role,inst_id,username,password,email,mobile from users_new where username=?"
+}
+
+//---->employee queries
+
+readQueries.getEmployeeCurrentDetails = () => {
+  //employee current experiance (inst_id required)
+  return `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no,exp.order_date,
+  exp.appointment_category,exp.appoint_cadre,exp.appoint_course,exp.designation as appoint_desig,exp.pay_scale,exp.appoint_remark,
+  exp.promoted_under_cas,exp.cas_designation as new_designation ,exp.deputed_or_lean_location as depu_location,exp.deputation_start_date,exp.deputation_end_date
+  FROM employee as emp left JOIN employee_experiance as exp on emp.id=exp.employee_id and exp.is_past=0 
+  where emp.id=? and emp.inst_id=? and exp.is_past=0`
 }
 export { readQueries };

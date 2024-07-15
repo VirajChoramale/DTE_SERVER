@@ -48,12 +48,11 @@ export const getEmployee = async (req, res) => {
   const inst_id = req.params.id;
 
   const eid = req.query.empid;
-  const employee_query = `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no,exp.order_date,
-  exp.appointment_category,exp.appoint_cadre,exp.appoint_course,exp.designation as appoint_desig,exp.pay_scale,exp.appoint_remark,
-  exp.promoted_under_cas,exp.cas_designation as new_designation ,exp.deputed_or_lean_location as depu_location,exp.deputation_start_date,exp.deputation_end_date
-  FROM employee as emp left JOIN employee_experiance as exp on emp.id=exp.employee_id and exp.is_past=0 
-  where emp.id=${eid} and emp.inst_id=${inst_id} and exp.is_past=0`;
-  const employee = await executeReadQuery(employee_query);
+
+  const employee = await executeReadQuery(
+    readQueries.getEmployeeCurrentDetails(),
+    [eid, inst_id]
+  );
   return res.send({
     employeeData: employee[0],
   });

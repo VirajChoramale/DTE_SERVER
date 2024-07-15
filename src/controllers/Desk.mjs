@@ -1,6 +1,6 @@
 import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
-
+import { writeQueries} from "../db/writeQueries.mjs"
 export const getOffices = async (req, res) => {
   const offices = await executeReadQuery(readQueries.getOffices());
   return res.send({
@@ -22,7 +22,8 @@ export const getPost = async (req, res, next) => {
 
 export const updateVaccancy = async (req, res) => {
   const data = req.body.data;
-  if (!data || !data.sanction_post || !data.filled_post || !data.id) {
+  if (!(data.sanction_post || data.filled_post) || !data.id)
+  {
     return res.status(400).json({ msg: "Missing required data", code: 400 });
   }
   const vaccent_post = data.sanction_post - data.filled_post;
@@ -31,7 +32,7 @@ export const updateVaccancy = async (req, res) => {
   const columns = ["sensction_post", "filled_post", "vaccent_post"];
   try {
     const resp = await executeWriteQuery(
-      readQueries.updateTable("inst_vaccency_details", columns, "id", data.id),
+      writeQueries.updateTable("inst_vaccency_details", columns, "id", data.id),
       values
     );
     if (resp.affectedRows > 0) {

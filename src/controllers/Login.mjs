@@ -1,11 +1,10 @@
-import { bcrypt_text, compare_bcrypt } from "../utility/bcrypt_js.mjs";
+import {  compare_bcrypt } from "../utility/bcrypt_js.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import { configDotenv } from "dotenv";
 import { sendOtpSMS } from "../utility/otp.mjs";
-import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
+import { executeReadQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
 import { update_table } from "../utility/Sql_Querries.mjs";
-import { writeQueries } from "../db/writeQueries.mjs";
 configDotenv();
 const HmacKey = process.env.HMAC;
 
@@ -98,7 +97,7 @@ const verify_otp = async (req, res) => {
       }
     );
 
-    const sql = await update_table(
+ await update_table(
       "users_new",
       "username",
       req.user.uname,
