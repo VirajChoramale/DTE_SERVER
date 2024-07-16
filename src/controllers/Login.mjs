@@ -1,4 +1,4 @@
-import {  compare_bcrypt } from "../utility/bcrypt_js.mjs";
+import { compare_bcrypt } from "../utility/bcrypt_js.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import { configDotenv } from "dotenv";
 import { sendOtpSMS } from "../utility/otp.mjs";
@@ -9,10 +9,8 @@ configDotenv();
 const HmacKey = process.env.HMAC;
 
 const verify_user = async (username, password) => {
-
   try {
     const result = await executeReadQuery(readQueries.getUserInfo(), username);
-    
 
     if (result.length > 0) {
       const authinticate = compare_bcrypt(password, result[0]["password"]);
@@ -46,11 +44,11 @@ const verify_user = async (username, password) => {
 };
 const login = async (req, res, next) => {
   const resp = await verify_user(req.body.username, req.body.password);
-  
+
   if (resp.code == 200) {
     const uname = resp.data[0].username;
     const token = jsonwebtoken.sign({ uname }, HmacKey, {
-      expiresIn: "5m",
+      expiresIn: "15m",
       algorithm: "HS256",
     });
     let sms_resp = null;
@@ -76,20 +74,23 @@ const login = async (req, res, next) => {
       resp_arr.statusCode = 501;
     }
     res.status(200).send(resp_arr);
-    
   } else {
-   
     res.json(resp);
   }
 };
 
 const verify_otp = async (req, res) => {
-
   const tes = await executeReadQuery(readQueries.getUserInfo(), req.user.uname);
-  
+
   if (tes[0].latest_otp == req.body.otp) {
     const token = jsonwebtoken.sign(
-      { uname: req.user.uname, role: tes[0].role, inst_id: tes[0]["inst_id"] },
+      {
+        uname: req.user.uname,
+        role: tes[0].role,
+        inst_id: tes[0]["inst_id"],
+        is_inst: tes[0]["is_inst"],
+      },
+
       HmacKey,
       {
         expiresIn: "120m",
@@ -97,16 +98,17 @@ const verify_otp = async (req, res) => {
       }
     );
 
- await update_table(
+    await update_table(
       "users_new",
       "username",
       req.user.uname,
       ["latest_otp"],
       [""]
     );
-  
+
     res.setHeader("Authorization", `Bearer ${token}`);
     res.setHeader("role", `role ${tes[0].role}`);
+    res.setHeader("is_inst", `is_inst ${tes[0].is_inst}`);
     res.status(200).json({
       msg: "Validated",
       role: tes[0].role,

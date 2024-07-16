@@ -6,7 +6,7 @@ import { configDotenv } from "dotenv";
 import User from "./src/routes/User.mjs";
 import Institute from "./src/routes/Institute.mjs";
 import Desk from "./src/routes/Desk.mjs";
-import Common from "./src/routes/Common.mjs"
+import Common from "./src/routes/Common.mjs";
 import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
 import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
 import { SendGmail } from "./src/utility/sendGmail.mjs";
@@ -25,8 +25,9 @@ if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
   // Fork workers for each available CPU
-  const availableCPUs = cpus();
-  availableCPUs.forEach((cpu, index) => forkWorker(index));
+  const availableCPUs = [1]; //cpus();
+
+  availableCPUs.forEach((cpu, index) => forkWorker());
 
   cluster.on("exit", (worker, code, signal) => {
     console.log(
@@ -72,8 +73,9 @@ if (cluster.isPrimary) {
         "X-Requested-With",
         "token",
         "role",
+        "is_inst",
       ],
-      exposedHeaders: ["token", "Authorization", "role"],
+      exposedHeaders: ["token", "Authorization", "role", "is_inst"],
       // Allowed headers
     })
   );
@@ -81,9 +83,9 @@ if (cluster.isPrimary) {
     //sending key for redux
     res.json({ key: await KeyGen() });
   });
-  app.use("/auth",User,()=>{})
-  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});//Institute Route
-  app.use("/Common", Common, () => {});//Institute Route
+  app.use("/auth", User, () => {});
+  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {}); //Institute Route
+  app.use("/Common", Common, () => {}); //Institute Route
 
   app.use("/Desk", Desk, () => {});
   app.post("/testHeader", (req, res) => {

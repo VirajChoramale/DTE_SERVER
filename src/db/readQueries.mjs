@@ -83,11 +83,11 @@ FROM inst_vaccency_details as ivd
 left join designation_master as desig on ivd.desigation_id=desig.id
 left join course_group as cg on ivd.course_group=cg.id
 left join courses as crs on ivd.course_id=crs.id
-where ivd.id=?;`
-}
+where ivd.id=?;`;
+};
 readQueries.getPost = () => {
-  return "select * from inst_vaccency_details where id =?"
-}
+  return "select * from inst_vaccency_details where id =?";
+};
 readQueries.getPostCountEmp = () => {
   //get post wise employee count
   return `select count(id) as count from employee where post_id= ? and is_working=1`;
@@ -100,15 +100,15 @@ readQueries.updateTable = (table_name, colms, identifier, identifierValue) => {
 //email template queries//
 
 readQueries.getEmailTemplates = () => {
-  return "SELECT * FROM email_template"
-}
+  return "SELECT * FROM email_template";
+};
 readQueries.getEmailTemplate = () => {
-  return "SELECT * FROM email_template where id=?"
-}
+  return "SELECT * FROM email_template where id=?";
+};
 readQueries.getUserInfo = () => {
   //get user information from usertable
-  return "select latest_otp,role,inst_id,username,password,email,mobile from users_new where username=?"
-}
+  return "select latest_otp,role,inst_id,is_inst,username,password,email,mobile from users_new where username=?";
+};
 
 //---->employee queries
 
@@ -118,6 +118,6 @@ readQueries.getEmployeeCurrentDetails = () => {
   exp.appointment_category,exp.appoint_cadre,exp.appoint_course,exp.designation as appoint_desig,exp.pay_scale,exp.appoint_remark,
   exp.promoted_under_cas,exp.cas_designation as new_designation ,exp.deputed_or_lean_location as depu_location,exp.deputation_start_date,exp.deputation_end_date
   FROM employee as emp left JOIN employee_experiance as exp on emp.id=exp.employee_id and exp.is_past=0 
-  where emp.id=? and emp.inst_id=? and exp.is_past=0`
-}
+  where emp.id=? and emp.inst_id=? and exp.is_past=0`;
+};
 export { readQueries };
