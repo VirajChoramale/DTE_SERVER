@@ -22,7 +22,7 @@ export const getDataCreateProfile = async (req, res) => {
                       left join course_group as cg on ivd.course_group=cg.id
                       left join courses as crs on ivd.course_id=crs.id
                       left join designation_master as dm on ivd.desigation_id=dm.id
-                      WHERE ivd.inst_id=${inst_id};`;
+                      WHERE ivd.inst_id=${inst_id} ${typ == 2 ? "and ivd.course_group=0":""};`;
   const employement_query = `SELECT * FROM employbility_status`;
   const leave_query = "SELECT * FROM `leave_reason`";
   const app_query = "SELECT * FROM category";

@@ -84,7 +84,7 @@ if (cluster.isPrimary) {
     res.json({ key: await KeyGen() });
   });
   app.use("/auth", User, () => {});
-  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {}); //Institute Route
+  app.use("/Institute", Institute, () => {}); //Institute Route
   app.use("/Common", Common, () => {}); //Institute Route
 
   app.use("/Desk", Desk, () => {});
