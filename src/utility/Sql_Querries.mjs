@@ -7,19 +7,37 @@ const update_table = async (
   columns,
   values
 ) => {
-  const set_col = columns.map((col) => `${col}=?`).join(",");
-  const query = `update ${tabel_name} set ${set_col} where ${key_col} =?`;
+  try {
+    const set_col = columns.map((col) => `${col}=?`).join(",");
+    const query = `update ${tabel_name} set ${set_col} where ${key_col} =?`;
 
-  const val = [...values, key_col_val];
-  const resp = await executeWriteQuery(query, val);
-  return resp;
+    const val = [...values, key_col_val];
+    const resp = await executeWriteQuery(query, val);
+    return resp;
+  } catch (error) {
+    return error;
+  }
 };
 const select_from_table = async (tableName, select_col, where_colm, key) => {
-  const where_col = where_colm.map((col) => `${col}=?`).join("AND");
-  const sel_cols = select_col.map((col) => `${col} = ?`).join(" , ");
+  try {
+    const where_col = where_colm.map((col) => `${col}=?`).join("AND");
+    const sel_cols = select_col.map((col) => `${col} = ?`).join(" , ");
 
-  const query = `SELECT ${sel_cols} FROM ${tableName} WHERE ${where_col} ?`;
-  const [rows] = await executeReadQuery(query, key);
-  return rows;
+    const query = `SELECT ${sel_cols} FROM ${tableName} WHERE ${where_col} ?`;
+    const [rows] = await executeReadQuery(query, key);
+    return rows;
+  } catch (error) {
+    return error;
+  }
 };
-export { update_table, select_from_table };
+const deleteFromnTable = async (tableName, whereCol, keyColVal) => {
+  try {
+    const query = `delete from ${tableName} where  ${whereCol}= ${keyColVal}`;
+    console.log(query);
+    const res = await executeWriteQuery(query);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};
+export { update_table, select_from_table, deleteFromnTable };

@@ -91,7 +91,7 @@ if (cluster.isPrimary) {
   //Commo Route
   app.use("/Common", Common, () => { }); 
   //DataStreamPipeline
-  app.use("/DataPipeline",verifyToken,DataStream)
+  app.use("/DataPipeline", verifyToken, DataStream);
 
   app.use("/Desk", Desk, () => {});
   app.post("/testHeader", (req, res) => {

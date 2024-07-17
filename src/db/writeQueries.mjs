@@ -22,4 +22,5 @@ return query;
 writeQueries.insertTable = (tableName) => {
   return `Insert into ${tableName} set ?`;
 };
+
 export { writeQueries };
