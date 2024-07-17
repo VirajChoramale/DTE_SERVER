@@ -4,6 +4,8 @@ import { writeQueries } from "../db/writeQueries.mjs";
 import { update_table } from "../utility/Sql_Querries.mjs";
 
 //This controller for common operation which are common in different roles
+
+/*---->create Employee form(1) create and update in one*/
 export const createEmployee = async (req, res) => {
   const employeeData = req.body.data.employee;
   const experianceData = req.body.data.experiance;
@@ -140,3 +142,10 @@ export const createEmployee = async (req, res) => {
     res.send(response);
   }
 };
+
+
+
+
+
+
+

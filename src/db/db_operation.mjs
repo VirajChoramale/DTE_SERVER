@@ -8,6 +8,7 @@ const executeReadQuery = (query, params) => {
     primary_connection
       .acquire()
       .then((conn) => {
+        
         conn.query(query, params, (err, res) => {
           primary_connection.release(conn);
           if (err) {

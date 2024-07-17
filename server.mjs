@@ -5,6 +5,8 @@ import cors from "cors";
 import { configDotenv } from "dotenv";
 import User from "./src/routes/User.mjs";
 import Institute from "./src/routes/Institute.mjs";
+import DataStream from "./src/routes/DataStream.mjs";
+
 import Desk from "./src/routes/Desk.mjs";
 import Common from "./src/routes/Common.mjs";
 import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
@@ -83,9 +85,13 @@ if (cluster.isPrimary) {
     //sending key for redux
     res.json({ key: await KeyGen() });
   });
-  app.use("/auth", User, () => {});
-  app.use("/Institute", Institute, () => {}); //Institute Route
-  app.use("/Common", Common, () => {}); //Institute Route
+  app.use("/auth", User, () => { });
+  //Institute Route
+  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => { }); 
+  //Commo Route
+  app.use("/Common", Common, () => { }); 
+  //DataStreamPipeline
+  app.use("/DataPipeline",verifyToken,DataStream)
 
   app.use("/Desk", Desk, () => {});
   app.post("/testHeader", (req, res) => {

@@ -17,6 +17,8 @@ configDotenv();
     idleTimeoutMillis: 300000 
  })
 
+
+
  const replica_connection=createPool({
     create:()=>mysql.createConnection({
         host:process.env.DB_HOST,

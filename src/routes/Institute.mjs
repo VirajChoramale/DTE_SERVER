@@ -7,7 +7,6 @@ import {
   insertEmployee,
   getPostCountEmp,
 } from "../controllers/Institute.mjs";
-import { verifyToken, Auth_req } from "../middleware/Auth.mjs";
 const router = express.Router();
 
 router.post("/create_profile_data/:id", getDataCreateProfile, (req, res) => {});

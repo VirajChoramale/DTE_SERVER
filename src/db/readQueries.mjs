@@ -47,6 +47,17 @@ readQueries.getInstCourseGroup = () => {
         GROUP by ivd.course_group;`;
 };
 
+//-->Masters<--
+
+readQueries.getReligion = () => {
+  return "select * from reliogion";
+}
+readQueries.getCasts = () => {
+  return "select * from caste_master";
+}
+readQueries.getMothertounges = () => {
+  return "select * from mothertongue"; 
+}
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
   return "select * from designation_master";
