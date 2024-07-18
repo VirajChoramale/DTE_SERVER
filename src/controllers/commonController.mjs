@@ -152,13 +152,13 @@ export const createEmployee = async (req, res) => {
   }
 };
 
+/* Personal Detail form(2) */
 export const createPersonalDetails = async (req, res) => {
   const employeeId = req.body.data.personalDetails.employee_id;
   const data = req.body.data;
   const editMode = req.body.isEditMode;
   const response = {};
   try {
-    
     if (editMode == 0) {
       response.insertPersonalDetails = await executeWriteQuery(
         writeQueries.insertTable("employee_personal_details"),
@@ -178,13 +178,15 @@ export const createPersonalDetails = async (req, res) => {
         Object.keys(data.personalDetails),
         Object.values(data.personalDetails)
       );
-    
+
       if (data.personalDetails.caste <= 2) {
-     
-        response.deleteCasteDetails = await deleteFromnTable("employee_cast_details", "employee_id", employeeId);
+        response.deleteCasteDetails = await deleteFromnTable(
+          "employee_cast_details",
+          "employee_id",
+          employeeId
+        );
         console.log(response.deleteCasteDetails);
-      }
-      else if (data.personalDetails.caste > 2) {
+      } else if (data.personalDetails.caste > 2) {
         response.updateCasteDetails = await update_table(
           "employee_cast_details",
           "employee_id",
@@ -196,6 +198,104 @@ export const createPersonalDetails = async (req, res) => {
     }
   } catch (err) {
     response.sqlError = err;
+  }
+  res.send(response);
+};
+/* Maritial Status form(3) */
+
+export const createMaritialStatus = async (req, res) => {
+  const isEditMode = req.body.isEditMode;
+  const employeeID = req.body.employee_id;
+  const employeeMaritialData = req.body.data.spouseDetails;
+  const isChild = req.body.isChild;
+  const response = {};
+  try {
+    if (isEditMode == 0) {
+      response.insertSpouse = await executeWriteQuery(
+        writeQueries.insertTable("Employee_spouse"),
+        employeeMaritialData
+      );
+      if (isChild == 1) {
+        const childData = req.body.data.childDetails;
+        let resArr = [];
+        for (const element of childData) {
+          const respond = await executeWriteQuery(
+            writeQueries.insertTable("Employee_child"),
+            element
+          );
+          resArr.push(respond);
+        }
+
+        response.childResponse = resArr;
+      }
+    } else if (isEditMode == 1) {
+      response.updateSpouse = await update_table(
+        "Employee_spouse",
+        "employee_id",
+        employeeID,
+        Object.keys(employeeMaritialData),
+        Object.values(employeeMaritialData)
+      );
+    }
+    if (isChild == 1) {
+      response.deleteChild = await deleteFromnTable(
+        "Employee_child",
+        "employee_id",
+        employeeID
+      );
+      const childData = req.body.data.childDetails;
+      let resArr = [];
+      for (const element of childData) {
+        const respond = await executeWriteQuery(
+          writeQueries.insertTable("Employee_child"),
+          element
+        );
+        resArr.push(respond);
+      }
+
+      response.updateChild = resArr;
+    }
+
+    return res.send(response);
+  } catch (error) {
+    response.error = "SQL ERROR=> " + error;
+  }
+  return res.send(response);
+};
+
+export const createeducationalDetails = async (req, res) => {
+  console.log(req.body.data.education);
+  const employeeId = req.body.employee_id;
+  const isEditMode = req.body.isEditMode;
+  const education = req.body.data.education;
+
+  const response = {};
+  try {
+    if (isEditMode == 0) {
+      response.insertEducation = await executeWriteQuery(
+        writeQueries.insertTable("employee_educational_details"),
+        education
+      );
+      res.status(201);
+    } else if (isEditMode == 1) {
+      const row = req.body.updateRowId;
+      response.updateEducation = await update_table(
+        "employee_educational_details",
+        "id",
+        row,
+        Object.keys(education),
+        Object.values(education)
+      );
+    } else if (isEditMode == 3) {
+      const row = req.body.deleteRowId;
+      response.deleteEducation = await deleteFromnTable(
+        "employee_educational_details",
+        "id",
+        row
+      );
+    }
+  } catch (error) {
+    response.err = `SQL Error =>${error}`;
   }
   res.send(response);
 };

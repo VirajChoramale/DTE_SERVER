@@ -33,7 +33,7 @@ const select_from_table = async (tableName, select_col, where_colm, key) => {
 const deleteFromnTable = async (tableName, whereCol, keyColVal) => {
   try {
     const query = `delete from ${tableName} where  ${whereCol}= ${keyColVal}`;
-    console.log(query);
+
     const res = await executeWriteQuery(query);
     return res;
   } catch (error) {
