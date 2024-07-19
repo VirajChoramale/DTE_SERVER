@@ -86,8 +86,8 @@ export const createEmployee = async (req, res) => {
         job_role: experianceData.job_role,
         promoted_under_cas: experianceData.promoted_under_cas,
         cas_designation: experianceData.cas_designation,
-        designation: experianceData.designation,
-        department: experianceData.department,
+        designation: post[0].desigation_id,
+        department: post[0].course_group,
         date_of_joining: experianceData.date_of_joining,
         letter_no: experianceData.current_posting_letter_number,
         is_past: 0,
@@ -262,6 +262,7 @@ export const createMaritialStatus = async (req, res) => {
   }
   return res.send(response);
 };
+/* Educational  Details  form(4) */
 
 export const createeducationalDetails = async (req, res) => {
   console.log(req.body.data.education);
@@ -299,5 +300,82 @@ export const createeducationalDetails = async (req, res) => {
   }
   res.send(response);
 };
+/* Experiance  Details  form(5) */
+export const createExperianceDetails = async (req, res) => {
+  const employeeId = req.body.employee_id;
+  const isEditMode = req.body.isEditMode;
+  const experiance = req.body.data.experiance;
+  const response = {};
+  experiance.is_past = 1;
 
+  try {
+    if (isEditMode == 0) {
+      response.createExperiance = await executeWriteQuery(
+        writeQueries.insertTable("employee_experiance"),
+        experiance
+      );
+    } else if (isEditMode == 1) {
+      const row = req.body.rowId;
+      response.updateExperinace = await update_table(
+        "employee_experiance",
+        "id",
+        row,
+        Object.keys(experiance),
+        Object.values(experiance)
+      );
+    } else if (isEditMode == 3) {
+      const row = req.body.rowId;
+      response.deleteEducation = await deleteFromnTable(
+        "employee_experiance",
+        "id",
+        row
+      );
+    }
+  } catch (error) {
+    res.status(301);
+    response.Error = "SQL ERROR => " + error;
+  }
+  res.send(response);
+};
 
+export const createOtherDetails = async (req, res) => {
+  const employeeId = req.body.employee_id;
+  const isEditMode = req.body.isEditMode;
+  const isTechnical = req.body.isTechnical;
+
+  const retirenmentDetails = req.body.data.retirenmentDetails;
+  const departmentalEnquiry = req.body.data.departmentalEnquiry;
+  const response = {};
+  try {
+    if (isEditMode == 0) {
+      if (isTechnical == 1) {
+        response.insertProbation = await executeWriteQuery(
+          writeQueries.insertTable("employee_probation_details"),
+          req.body.data.probation
+        );
+        response.departmentalInsert = await executeWriteQuery(
+          writeQueries.insertTable("employee_deparmental_enquiry_details"),
+          departmentalEnquiry
+        );
+        response.retirenmentInsert = await executeWriteQuery(
+          writeQueries.insertTable("employee_retirement_details"),
+          retirenmentDetails
+        );
+      } else if (isEditMode == 2) {
+        if (isTechnical) {
+          response.updateProbation = await update_table(
+            "employee_probation_details",
+            "employee_id",
+            employeeId,
+            Object.keys(req.body.data.probation),
+            Object.values(req.body.data.probation)
+          );
+        }
+      }
+    }
+  } catch (error) {
+    res.status(302);
+    response.Error = "SQL ERROR => " + error;
+  }
+  return res.send(response);
+};
