@@ -299,3 +299,5 @@ export const createeducationalDetails = async (req, res) => {
   }
   res.send(response);
 };
+
+
