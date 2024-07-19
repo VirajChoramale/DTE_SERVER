@@ -51,13 +51,13 @@ readQueries.getInstCourseGroup = () => {
 
 readQueries.getReligion = () => {
   return "select * from reliogion";
-}
+};
 readQueries.getCasts = () => {
   return "select * from caste_master";
-}
+};
 readQueries.getMothertounges = () => {
-  return "select * from mothertongue"; 
-}
+  return "select * from mothertongue";
+};
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
   return "select * from designation_master";
@@ -128,7 +128,9 @@ readQueries.getEmployeeCurrentDetails = () => {
   return `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no,exp.order_date,
   exp.appointment_category,exp.appoint_cadre,exp.appoint_course,exp.designation as appoint_desig,exp.pay_scale,exp.appoint_remark,
   exp.promoted_under_cas,exp.cas_designation as new_designation ,exp.deputed_or_lean_location as depu_location,exp.deputation_start_date,exp.deputation_end_date
+  ,ead.mode_of_selection,ead.letter_number as appointment_letter_number
   FROM employee as emp left JOIN employee_experiance as exp on emp.id=exp.employee_id and exp.is_past=0 
+  left join employee_appointment_details as ead on emp.id=ead.employee_id
   where emp.id=? and emp.inst_id=? and exp.is_past=0`;
 };
 export { readQueries };
