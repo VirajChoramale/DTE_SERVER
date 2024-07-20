@@ -9,7 +9,7 @@ import { deleteFromnTable, update_table } from "../utility/Sql_Querries.mjs";
 export const createEmployee = async (req, res) => {
   const employeeData = req.body.data.employee;
   const experianceData = req.body.data.experiance;
-  const inst_id = 1001;
+  const inst_id = 25;
   const is_inst = 1001;
   let eid = null;
   const response = {};
@@ -118,7 +118,7 @@ export const createEmployee = async (req, res) => {
     if (req.body.is_edit_mode == 0) {
       appointmentDetails[0].employee_id = eid;
       experiance[0].employee_id = eid;
-
+      console.log(experiance);
       response.appointmentDetails = await executeWriteQuery(
         writeQueries.insertTable("employee_appointment_details"),
         appointmentDetails
@@ -342,7 +342,6 @@ export const createOtherDetails = async (req, res) => {
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;
   const isTechnical = req.body.isTechnical;
-
   const retirenmentDetails = req.body.data.retirenmentDetails;
   const departmentalEnquiry = req.body.data.departmentalEnquiry;
   const response = {};
@@ -361,17 +360,31 @@ export const createOtherDetails = async (req, res) => {
           writeQueries.insertTable("employee_retirement_details"),
           retirenmentDetails
         );
-      } else if (isEditMode == 2) {
-        if (isTechnical) {
-          response.updateProbation = await update_table(
-            "employee_probation_details",
-            "employee_id",
-            employeeId,
-            Object.keys(req.body.data.probation),
-            Object.values(req.body.data.probation)
-          );
-        }
       }
+    } else if (isEditMode == 1) {
+      if (isTechnical == 1) {
+        response.updateProbation = await update_table(
+          "employee_probation_details",
+          "employee_id",
+          employeeId,
+          Object.keys(req.body.data.probation),
+          Object.values(req.body.data.probation)
+        );
+      }
+      response.updateDepartmental = await update_table(
+        "employee_deparmental_enquiry_details",
+        "employee_id",
+        employeeId,
+        Object.keys(departmentalEnquiry),
+        Object.values(departmentalEnquiry)
+      );
+      response.updateRetirenmentDetails = await update_table(
+        "employee_retirement_details",
+        "employee_id",
+        employeeId,
+        Object.keys(retirenmentDetails),
+        Object.values(retirenmentDetails)
+      );
     }
   } catch (error) {
     res.status(302);

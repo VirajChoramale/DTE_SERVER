@@ -14,7 +14,7 @@ configDotenv();
     destroy:(conn)=>conn.end(),
     max: 10,
     min: 2,
-    idleTimeoutMillis: 300000 
+    idleTimeoutMillis: 60000 
  })
 
 

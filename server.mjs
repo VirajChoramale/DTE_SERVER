@@ -66,6 +66,7 @@ if (cluster.isPrimary) {
         "http://192.168.2.244:5175",
         "http://49.248.37.122:5173",
         "http://49.248.37.122",
+        "http://localhost:4173"
       ],
       credentials: true, // Allow cookies for cross-origin requests (if applicable)
       methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
