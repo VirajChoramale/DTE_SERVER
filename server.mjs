@@ -62,11 +62,11 @@ if (cluster.isPrimary) {
       origin: [
         "http://localhost:5173",
         "http://192.168.3.52:5173",
-        "http://192.168.0.109",
+        "http://127.0.0.1:5173",
         "http://192.168.2.244:5175",
         "http://49.248.37.122:5173",
         "http://49.248.37.122",
-        "http://localhost:4173"
+        "http://localhost:4173",
       ],
       credentials: true, // Allow cookies for cross-origin requests (if applicable)
       methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
@@ -86,11 +86,11 @@ if (cluster.isPrimary) {
     //sending key for redux
     res.json({ key: await KeyGen() });
   });
-  app.use("/auth", User, () => { });
+  app.use("/auth", User, () => {});
   //Institute Route
-  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => { }); 
+  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});
   //Commo Route
-  app.use("/Common", Common, () => { }); 
+  app.use("/Common", Common, () => {});
   //DataStreamPipeline
   app.use("/DataPipeline", verifyToken, DataStream);
 

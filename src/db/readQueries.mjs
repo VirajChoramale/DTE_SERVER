@@ -52,6 +52,9 @@ readQueries.getInstCourseGroup = () => {
 readQueries.getReligion = () => {
   return "select * from religion";
 };
+readQueries.getPwd = () => {
+  return "select * FROM pwd";
+};
 readQueries.getCasts = () => {
   return "select * from caste_master";
 };
@@ -59,7 +62,7 @@ readQueries.getMothertounges = () => {
   return "select * from mothertongue";
 };
 readQueries.getCatogary = () => {
-  return "select * from SELECT * FROM category";
+  return "select *  FROM category";
 };
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
@@ -140,10 +143,11 @@ readQueries.getEmployeeCurrentDetails = () => {
   where emp.id=? and emp.inst_id=? and exp.is_past=0`;
 };
 readQueries.getEmployeeExperiances = () => {
-  return `SELECT exp.*, om.office_name,om.office_name_marathi,crs.course_group_name_eng,desig.designation_name FROM employee_experiance as exp
+  return `SELECT exp.*, om.office_name,om.office_name_marathi,crs.course_group_name_eng,desig.designation_name,appointment_type.appointment_type as mode_of_joining FROM employee_experiance as exp
 left join office_master as om on exp.institute_id=om.id
 left join course_group as crs on exp.appoint_course=crs.id
 left join designation_master as desig on exp.appoint_designation=desig.id
-WHERE exp.employee_id=? and exp.is_past=1`;
+left join appointment_type on exp.appointment_type=appointment_type.id
+WHERE exp.employee_id=? and exp.is_past=1;`;
 };
 export { readQueries };

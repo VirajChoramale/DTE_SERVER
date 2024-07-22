@@ -12,6 +12,7 @@ export const personalDetailsData = async (req, res) => {
     );
     response.religion = await executeReadQuery(readQueries.getReligion());
     response.category = await executeReadQuery(readQueries.getCatogary());
+    response.pwdTypes = await executeReadQuery(readQueries.getPwd());
     return res.status(200).send(response);
   } catch (error) {
     response.error = {
@@ -38,7 +39,7 @@ export const fetchExperianceFormData = async (req, res) => {
 };
 export const employeeExperiance = async (req, res) => {
   const eid = req.body.eid;
-  console.log("hit");
+
   const response = {};
   try {
     response.employeeExperiances = await executeReadQuery(
