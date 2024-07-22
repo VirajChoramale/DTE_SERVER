@@ -13,6 +13,9 @@ export const personalDetailsData = async (req, res) => {
     response.religion = await executeReadQuery(readQueries.getReligion());
     response.category = await executeReadQuery(readQueries.getCatogary());
     response.pwdTypes = await executeReadQuery(readQueries.getPwd());
+    response.instLeavingReason = await executeReadQuery(
+      readQueries.getLeavingReason()
+    );
     return res.status(200).send(response);
   } catch (error) {
     response.error = {
@@ -30,6 +33,10 @@ export const fetchExperianceFormData = async (req, res) => {
     response.leavingReason = await executeReadQuery(
       readQueries.getLeavingReason()
     );
+    response.designations = await executeReadQuery(
+      readQueries.getDesignations()
+    );
+    response.courses = await executeReadQuery(readQueries.getCourseGroups());
   } catch (error) {
     response.err = "SQL ERROR => " + error;
     res.status(302);
@@ -44,7 +51,7 @@ export const employeeExperiance = async (req, res) => {
   try {
     response.employeeExperiances = await executeReadQuery(
       readQueries.getEmployeeExperiances(),
-      908
+      ei
     );
     return res.send(response);
   } catch (error) {
