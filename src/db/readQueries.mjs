@@ -108,6 +108,9 @@ readQueries.updateTable = (table_name, colms, identifier, identifierValue) => {
 
   return `update ${table_name} set ${setClause} where ${identifier} = ${identifierValue} `;
 };
+readQueries.getLeavingReason = () => {
+  return "SELECT * FROM leave_reason"
+}
 //email template queries//
 
 readQueries.getEmailTemplates = () => {
@@ -125,7 +128,7 @@ readQueries.getUserInfo = () => {
 
 readQueries.getEmployeeCurrentDetails = () => {
   //employee current experiance (inst_id required)
-  return `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no,exp.order_date,
+  return `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no as current_posting_letter_number,exp.order_date,
   exp.appointment_category,exp.appoint_cadre,exp.appoint_course,exp.designation as appoint_desig,exp.pay_scale,exp.appoint_remark,
   exp.promoted_under_cas,exp.cas_designation as new_designation ,exp.deputed_or_lean_location as depu_location,exp.deputation_start_date,exp.deputation_end_date
   ,ead.mode_of_selection,ead.letter_number as appointment_letter_number
@@ -133,4 +136,11 @@ readQueries.getEmployeeCurrentDetails = () => {
   left join employee_appointment_details as ead on emp.id=ead.employee_id
   where emp.id=? and emp.inst_id=? and exp.is_past=0`;
 };
+readQueries.getEmployeeExperiances = () => {
+  return `SELECT exp.*, om.office_name,om.office_name_marathi,crs.course_group_name_eng,desig.designation_name FROM employee_experiance as exp
+left join office_master as om on exp.institute_id=om.id
+left join course_group as crs on exp.appoint_course=crs.id
+left join designation_master as desig on exp.appoint_designation=desig.id
+WHERE exp.employee_id=? and exp.is_past=1`;
+}
 export { readQueries };

@@ -20,3 +20,36 @@ export const personalDetailsData = async (req, res) => {
     return res.status(302).send(response);
   }
 };
+export const fetchExperianceFormData = async (req, res) => {
+ 
+  const response = {};
+  
+  try {
+    
+    response.offices = await executeReadQuery(readQueries.getOffices());
+       response.leavingReason = await executeReadQuery(readQueries.getLeavingReason());
+    
+  } catch (error) {
+    response.err = "SQL ERROR => " + error
+    res.status(302)
+  }
+  finally {
+   
+    res.send(response)
+    }
+ 
+}
+export const employeeExperiance = async (req, res) => {
+  const eid = req.body.eid;
+  console.log("hit")
+  const response = {}
+  try {
+    response.employeeExperiances=await executeReadQuery(readQueries.getEmployeeExperiances(),908)
+    return res.send(response);
+  } catch (error) {
+    return res.status(302).send("SQL ERROR" + error);
+  }
+  
+
+  
+}
