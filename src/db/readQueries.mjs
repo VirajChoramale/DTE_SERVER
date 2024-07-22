@@ -50,7 +50,7 @@ readQueries.getInstCourseGroup = () => {
 //-->Masters<--
 
 readQueries.getReligion = () => {
-  return "select * from reliogion";
+  return "select * from religion";
 };
 readQueries.getCasts = () => {
   return "select * from caste_master";
