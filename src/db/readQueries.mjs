@@ -58,6 +58,9 @@ readQueries.getCasts = () => {
 readQueries.getMothertounges = () => {
   return "select * from mothertongue";
 };
+readQueries.getCatogary = () => {
+  return "select * from SELECT * FROM category";
+};
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
   return "select * from designation_master";
@@ -109,8 +112,8 @@ readQueries.updateTable = (table_name, colms, identifier, identifierValue) => {
   return `update ${table_name} set ${setClause} where ${identifier} = ${identifierValue} `;
 };
 readQueries.getLeavingReason = () => {
-  return "SELECT * FROM leave_reason"
-}
+  return "SELECT * FROM leave_reason";
+};
 //email template queries//
 
 readQueries.getEmailTemplates = () => {
@@ -142,5 +145,5 @@ left join office_master as om on exp.institute_id=om.id
 left join course_group as crs on exp.appoint_course=crs.id
 left join designation_master as desig on exp.appoint_designation=desig.id
 WHERE exp.employee_id=? and exp.is_past=1`;
-}
+};
 export { readQueries };

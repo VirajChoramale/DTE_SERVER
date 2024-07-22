@@ -10,7 +10,8 @@ export const personalDetailsData = async (req, res) => {
     response.mothertongue = await executeReadQuery(
       readQueries.getMothertounges()
     );
-    response.religion = await executeReadQuery(readQueries.getMothertounges());
+    response.religion = await executeReadQuery(readQueries.getReligion());
+    response.category = await executeReadQuery(readQueries.getCatogary());
     return res.status(200).send(response);
   } catch (error) {
     response.error = {
@@ -21,35 +22,31 @@ export const personalDetailsData = async (req, res) => {
   }
 };
 export const fetchExperianceFormData = async (req, res) => {
- 
   const response = {};
-  
+
   try {
-    
     response.offices = await executeReadQuery(readQueries.getOffices());
-       response.leavingReason = await executeReadQuery(readQueries.getLeavingReason());
-    
+    response.leavingReason = await executeReadQuery(
+      readQueries.getLeavingReason()
+    );
   } catch (error) {
-    response.err = "SQL ERROR => " + error
-    res.status(302)
+    response.err = "SQL ERROR => " + error;
+    res.status(302);
+  } finally {
+    res.send(response);
   }
-  finally {
-   
-    res.send(response)
-    }
- 
-}
+};
 export const employeeExperiance = async (req, res) => {
   const eid = req.body.eid;
-  console.log("hit")
-  const response = {}
+  console.log("hit");
+  const response = {};
   try {
-    response.employeeExperiances=await executeReadQuery(readQueries.getEmployeeExperiances(),908)
+    response.employeeExperiances = await executeReadQuery(
+      readQueries.getEmployeeExperiances(),
+      908
+    );
     return res.send(response);
   } catch (error) {
     return res.status(302).send("SQL ERROR" + error);
   }
-  
-
-  
-}
+};
