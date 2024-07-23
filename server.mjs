@@ -90,7 +90,7 @@ if (cluster.isPrimary) {
   //Institute Route
   app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});
   //Commo Route
-  app.use("/Common", Common, () => {});
+  app.use("/Common", verifyToken,Common, () => {});
   //DataStreamPipeline
   app.use("/DataPipeline", verifyToken, DataStream);
 
