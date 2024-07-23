@@ -51,7 +51,7 @@ export const employeeExperiance = async (req, res) => {
   try {
     response.employeeExperiances = await executeReadQuery(
       readQueries.getEmployeeExperiances(),
-      ei
+      eid
     );
     return res.send(response);
   } catch (error) {
