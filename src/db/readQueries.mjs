@@ -151,9 +151,9 @@ left join appointment_type on exp.appointment_type=appointment_type.id
 WHERE exp.employee_id=? and exp.is_past=1;`;
 };
 readQueries.getEmpPersonalDetail = () => {
-  return `
-  SELECT * FROM employee_personal_details as epd
+  return `SELECT epd.*,ecd.caste,ecd.castCertificateNumber,ecd.castCertificateDate,ecd.castCertificateAuthority,ecd.castValidityNumber,ecd.castValidityDate,
+ecd.castValidityAuthority FROM employee_personal_details as epd
 left join employee_cast_details as ecd on epd.employee_id=ecd.employee_id
- where epd.employee_id=?;`;
+ where epd.employee_id=?`;
 };
 export { readQueries };

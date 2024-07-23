@@ -93,7 +93,7 @@ const verify_otp = async (req, res) => {
 
       HmacKey,
       {
-        expiresIn: "120m",
+        expiresIn: "180m",
         algorithm: "HS256",
       }
     );
