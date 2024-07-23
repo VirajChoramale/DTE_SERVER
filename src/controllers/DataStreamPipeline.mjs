@@ -25,6 +25,7 @@ export const personalDetailsData = async (req, res) => {
     return res.status(302).send(response);
   }
 };
+
 export const fetchExperianceFormData = async (req, res) => {
   const response = {};
 
@@ -51,7 +52,7 @@ export const employeeExperiance = async (req, res) => {
   try {
     response.employeeExperiances = await executeReadQuery(
       readQueries.getEmployeeExperiances(),
-      ei
+      eid
     );
     return res.send(response);
   } catch (error) {
