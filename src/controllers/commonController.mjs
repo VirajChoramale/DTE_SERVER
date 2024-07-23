@@ -170,6 +170,10 @@ export const createPersonalDetails = async (req, res) => {
           data.castDetails
         );
       }
+      response.employeePersonalDetails = await executeReadQuery(
+        readQueries.getEmpPersonalDetail(),
+        employeeId
+      );
     } else if (editMode == 1) {
       response.updatePersonalDetails = await update_table(
         "employee_personal_details",
@@ -178,14 +182,13 @@ export const createPersonalDetails = async (req, res) => {
         Object.keys(data.personalDetails),
         Object.values(data.personalDetails)
       );
-
+      res;
       if (data.personalDetails.caste <= 2) {
         response.deleteCasteDetails = await deleteFromnTable(
           "employee_cast_details",
           "employee_id",
           employeeId
         );
-        console.log(response.deleteCasteDetails);
       } else if (data.personalDetails.caste > 2) {
         response.updateCasteDetails = await update_table(
           "employee_cast_details",
@@ -194,10 +197,20 @@ export const createPersonalDetails = async (req, res) => {
           Object.keys(data.castDetails),
           Object.values(data.castDetails)
         );
+        if (response.updateCasteDetails.affectedRows < 1) {
+          response.insertCasteDetails = await executeWriteQuery(
+            writeQueries.insertTable("employee_cast_details"),
+            data.castDetails
+          );
+        }
       }
+      response.employeePersonalDetails = await executeReadQuery(
+        readQueries.getEmpPersonalDetail(),
+        employeeId
+      );
     }
   } catch (err) {
-    response.sqlError = err;
+    response.sqlError = "SQL ERR " + err;
   }
   res.send(response);
 };

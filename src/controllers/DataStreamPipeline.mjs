@@ -25,6 +25,7 @@ export const personalDetailsData = async (req, res) => {
     return res.status(302).send(response);
   }
 };
+
 export const fetchExperianceFormData = async (req, res) => {
   const response = {};
 
