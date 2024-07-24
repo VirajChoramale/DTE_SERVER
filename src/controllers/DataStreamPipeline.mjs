@@ -26,6 +26,20 @@ export const personalDetailsData = async (req, res) => {
   }
 };
 
+export const fetchEducationFormData = async (req, res) => {
+  const response = {};
+  try {
+    response.universities = await executeReadQuery(
+      readQueries.getUniversities()
+    );
+    response.educationalBoards = await executeReadQuery(
+      readQueries.getEducationalBoards()
+    );
+  } catch (error) {
+    response.err = "SQL ERR=> " + error;
+  }
+  res.send(response);
+};
 export const fetchExperianceFormData = async (req, res) => {
   const response = {};
 

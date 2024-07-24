@@ -64,6 +64,12 @@ readQueries.getMothertounges = () => {
 readQueries.getCatogary = () => {
   return "select *  FROM category";
 };
+readQueries.getUniversities = () => {
+  return "SELECT * FROM university_master";
+};
+readQueries.getEducationalBoards = () => {
+  return "SELECT * FROM education_boards";
+};
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
   return "select * from designation_master";

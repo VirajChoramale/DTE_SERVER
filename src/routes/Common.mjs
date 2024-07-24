@@ -17,11 +17,10 @@ import {
 
 router.post("/create_profile_data/:id", getDataCreateProfile, (req, res) => {});
 router.post("/getEmployeesData/:id", getEmployee, (req, res) => {});
-router.post("/get_vaccancy/:id", getInstituteVaccancy, (req, res) => {});
-router.post("/getEmployeeList/:id", getEmployeeList, (req, res) => {});
+router.post("/get_vaccancy", getInstituteVaccancy, (req, res) => {});
+router.post("/getEmployeeList", getEmployeeList, (req, res) => {});
 router.post("/insertEmployee", insertEmployee, (req, res) => {});
 router.post("/getPostCountEmp/:id", getPostCountEmp, (req, res) => {});
-
 
 /* */
 router.post("/createEmployee", createEmployee, (req, res) => {});
