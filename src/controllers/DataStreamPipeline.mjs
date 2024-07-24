@@ -94,8 +94,52 @@ export const employeeExperiance = async (req, res) => {
 export const getEmployeePersonalDetails = async (req, res) => {
   const response = {};
   try {
-    response.employee
+    response.employeePersonalDetails=await executeReadQuery(readQueries.getEmpPersonalDetail(),req.body.employeeID)
   } catch (error) {
+    res.status(302);
+    response.err = "SQL ERR ==>" + error;
     
   }
+  return res.send(response)
 }
+export const getMaritialDetails = async (req, res) => {
+  const response = {};
+  try {
+    response.maritialDetails=await executeReadQuery(readQueries.getMaritialDetails(),req.body.employeeID)
+    response.childData=await executeReadQuery(readQueries.getChildData(),req.body.employeeID)
+
+  } catch (error) {
+    res.status(302);
+    response.err = "SQL ERR ==>" + error;
+    
+  }
+  return res.send(response)
+}
+export const getEmployeeEducation = async (req, res) => {
+  const response = {};
+  try {
+    response.employeeEducation=await executeReadQuery(readQueries.getEmployeeEducation(),req.body.employeeID)
+
+  } catch (error) {
+    res.status(302);
+    response.err = "SQL ERR ==>" + error;
+    
+  }
+  return res.send(response)
+}
+export const getOtherDestils = async (req, res) => {
+  const response = {};
+  try {
+    response.probationDetails=await executeReadQuery(readQueries.getEmployeeProbation(),req.body.employeeID)
+    response.retirenmentDetails=await executeReadQuery(readQueries.getEmployeeRetirenment(),req.body.employeeID)
+    response.getDepartMentalEnquiry=await executeReadQuery(readQueries.getDepartMentalEnquiry(),req.body.employeeID)
+
+    
+  } catch (error) {
+    res.status(302);
+    response.err = "SQL ERR ==>" + error;
+    
+  }
+  return res.send(response)
+}
+

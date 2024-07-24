@@ -140,7 +140,21 @@ readQueries.getUserInfo = () => {
 };
 
 //---->employee queries
-
+readQueries.getEmpPersonalDetail = () => {
+  return `SELECT epd.*,ecd.caste,ecd.castCertificateNumber,ecd.castCertificateDate,ecd.castCertificateAuthority,ecd.castValidityNumber,ecd.castValidityDate,
+ecd.castValidityAuthority FROM employee_personal_details as epd
+left join employee_cast_details as ecd on epd.employee_id=ecd.employee_id
+ where epd.employee_id=?`;
+};
+readQueries.getMaritialDetails = () => {
+  return `select * from Employee_spouse where employee_id=?`
+}
+readQueries.getChildData = () => {
+  return `select * from Employee_child where employee_id=?`
+}
+readQueries.getEmployeeEducation = () => {
+  return `select * from employee_educational_details where employee_id=?`
+}
 readQueries.getEmployeeCurrentDetails = () => {
   //employee current experiance (inst_id required)
   return `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no as current_posting_letter_number,exp.order_date,
@@ -159,12 +173,16 @@ left join designation_master as desig on exp.appoint_designation=desig.id
 left join appointment_type on exp.appointment_type=appointment_type.id
 WHERE exp.employee_id=? and exp.is_past=1;`;
 };
-readQueries.getEmpPersonalDetail = () => {
-  return `SELECT epd.*,ecd.caste,ecd.castCertificateNumber,ecd.castCertificateDate,ecd.castCertificateAuthority,ecd.castValidityNumber,ecd.castValidityDate,
-ecd.castValidityAuthority FROM employee_personal_details as epd
-left join employee_cast_details as ecd on epd.employee_id=ecd.employee_id
- where epd.employee_id=?`;
-};
+readQueries.getEmployeeProbation = () => {
+  return `select * from employee_probation_details where employee_id=?`
+}
+readQueries.getEmployeeRetirenment = () => {
+  return `select * from employee_retirement_details where employee_id=?`
+}
+readQueries.getDepartMentalEnquiry = () => {
+  return `select * from employee_deparmental_enquiry_details where employee_id=?`
+}
+
 readQueries.getCertificatesByDesig = () => {
   return `SELECT designation_id, CONCAT( CASE WHEN medical_certificate = 1 THEN 'medical_certificate,' ELSE '' END,
    CASE WHEN mscit_certificate = 1 THEN 'mscit_certificate,' ELSE '' END,
