@@ -440,6 +440,8 @@ export const createExperianceDetails = async (req, res) => {
         row
       );
     }
+    response.experiaces=await executeReadQuery(readQueries.getEmployeeExperiances(),employeeId)
+
   } catch (error) {
     res.status(301);
     response.Error = "SQL ERROR => " + error;
