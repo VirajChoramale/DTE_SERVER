@@ -51,6 +51,8 @@ export const fetchExperianceFormData = async (req, res) => {
     response.designations = await executeReadQuery(
       readQueries.getDesignations()
     );
+    
+    response.deputationLocation = await executeReadQuery(readQueries.getDteOffices());
     response.courses = await executeReadQuery(readQueries.getCourseGroups());
   } catch (error) {
     response.err = "SQL ERROR => " + error;
@@ -59,20 +61,7 @@ export const fetchExperianceFormData = async (req, res) => {
     res.send(response);
   }
 };
-export const employeeExperiance = async (req, res) => {
-  const eid = req.body.eid;
 
-  const response = {};
-  try {
-    response.employeeExperiances = await executeReadQuery(
-      readQueries.getEmployeeExperiances(),
-      eid
-    );
-    return res.send(response);
-  } catch (error) {
-    return res.status(302).send("SQL ERROR" + error);
-  }
-};
 export const fetchEmployeeCertificate = async (req, res) => {
   const desigationId = req.body.designationId;
   console.log(req.body);
@@ -88,3 +77,25 @@ export const fetchEmployeeCertificate = async (req, res) => {
   }
   res.send(response);
 };
+export const employeeExperiance = async (req, res) => {
+  const eid = req.body.eid;
+
+  const response = {};
+  try {
+    response.employeeExperiances = await executeReadQuery(
+      readQueries.getEmployeeExperiances(),
+      eid
+    );
+    return res.send(response);
+  } catch (error) {
+    return res.status(302).send("SQL ERROR" + error);
+  }
+};
+export const getEmployeePersonalDetails = async (req, res) => {
+  const response = {};
+  try {
+    response.employee
+  } catch (error) {
+    
+  }
+}

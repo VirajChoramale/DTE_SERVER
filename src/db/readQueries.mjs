@@ -70,6 +70,9 @@ readQueries.getUniversities = () => {
 readQueries.getEducationalBoards = () => {
   return "SELECT * FROM education_boards";
 };
+readQueries.getDteOffices = () => {
+  return "select * from office_master where is_institute=2"
+}
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
   return "select * from designation_master";
