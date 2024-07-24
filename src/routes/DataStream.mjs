@@ -5,6 +5,7 @@ import {
   fetchExperianceFormData,
   fetchEducationFormData,
   employeeExperiance,
+  fetchEmployeeCertificate,
 } from "../controllers/DataStreamPipeline.mjs";
 router.post("/personalDetailsData", personalDetailsData, (req, res) => {});
 router.post(
@@ -19,5 +20,6 @@ router.post(
   (req, res) => {}
 );
 router.post("/employeeExperiance", employeeExperiance);
+router.post("/fetchEmployeeCertificate", fetchEmployeeCertificate);
 
 export default router;

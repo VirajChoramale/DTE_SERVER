@@ -73,3 +73,18 @@ export const employeeExperiance = async (req, res) => {
     return res.status(302).send("SQL ERROR" + error);
   }
 };
+export const fetchEmployeeCertificate = async (req, res) => {
+  const desigationId = req.body.designationId;
+  console.log(req.body);
+  const response = {};
+  try {
+    response.cretiFicates = await executeReadQuery(
+      readQueries.getCertificatesByDesig(),
+      desigationId
+    );
+  } catch (error) {
+    res.status(302);
+    response.err = "SQL ERR ==>" + error;
+  }
+  res.send(response);
+};

@@ -89,6 +89,7 @@ const verify_otp = async (req, res) => {
         role: tes[0].role,
         inst_id: tes[0]["inst_id"],
         is_inst: tes[0]["is_inst"],
+        name: tes[0]["name"],
       },
 
       HmacKey,

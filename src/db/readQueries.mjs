@@ -133,7 +133,7 @@ readQueries.getEmailTemplate = () => {
 };
 readQueries.getUserInfo = () => {
   //get user information from usertable
-  return "select latest_otp,role,inst_id,is_inst,username,password,email,mobile from users_new where username=?";
+  return "select latest_otp,role,inst_id,is_inst,username,name,password,email,mobile from users_new where username=?";
 };
 
 //---->employee queries
@@ -161,5 +161,17 @@ readQueries.getEmpPersonalDetail = () => {
 ecd.castValidityAuthority FROM employee_personal_details as epd
 left join employee_cast_details as ecd on epd.employee_id=ecd.employee_id
  where epd.employee_id=?`;
+};
+readQueries.getCertificatesByDesig = () => {
+  return `SELECT designation_id, CONCAT( CASE WHEN medical_certificate = 1 THEN 'medical_certificate,' ELSE '' END,
+   CASE WHEN mscit_certificate = 1 THEN 'mscit_certificate,' ELSE '' END,
+    CASE WHEN language_exemption = 1 THEN 'language_exemption,' ELSE '' END,
+     CASE WHEN steno_speed_certificate = 1 THEN 'steno_speed_certificate,' ELSE '' END,
+      CASE WHEN marathi_typing = 1 THEN 'marathi_typing' ELSE '' END, 
+      CASE WHEN english_typing = 1 THEN 'english_typing' ELSE '' END,
+       CASE WHEN permanent_certificate = 1 THEN 'permanent_certificate,' ELSE '' END,
+        CASE WHEN police_verification = 1 THEN 'police_verification,' ELSE '' END, 
+        CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate' ELSE '' END )
+         AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? GROUP BY designation_id`;
 };
 export { readQueries };

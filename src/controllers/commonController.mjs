@@ -386,7 +386,7 @@ export const createeducationalDetails = async (req, res) => {
         writeQueries.insertTable("employee_educational_details"),
         education
       );
-      res.status(201);
+      response.education = await executeReadQuery();
     } else if (isEditMode == 1) {
       const row = req.body.updateRowId;
       response.updateEducation = await update_table(

@@ -1,4 +1,4 @@
-import jsonwebtoken, { decode } from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 
 const verifyToken = async (req, res, next) => {
   if (req.headers.authorization) {
@@ -11,7 +11,7 @@ const verifyToken = async (req, res, next) => {
         const decodedToken = jsonwebtoken.verify(token, process.env.HMAC);
 
         req.user = decodedToken;
-        console.log(decodedToken);
+
         next();
       } else {
         res.status(401).send({ msg: "msg: 'Token Expired'," });
