@@ -434,16 +434,18 @@ export const createExperianceDetails = async (req, res) => {
       );
     } else if (isEditMode == 3) {
       const row = req.body.rowId;
-      response.deleteEducation = await deleteFromnTable(
+      response.deleteExperiance = await deleteFromnTable(
         "employee_experiance",
         "id",
         row
       );
     }
-    response.experiaces=await executeReadQuery(readQueries.getEmployeeExperiances(),employeeId)
-
+    response.employeeExperiance = await executeReadQuery(
+      readQueries.getEmployeeExperiances(),
+      employeeId
+    );
   } catch (error) {
-    res.status(301);
+    res.status(302).error();
     response.Error = "SQL ERROR => " + error;
   }
   res.send(response);
