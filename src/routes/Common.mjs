@@ -15,8 +15,8 @@ import {
   getPostCountEmp,
 } from "../controllers/commonController.mjs";
 
-router.post("/create_profile_data/:id", getDataCreateProfile, (req, res) => {});
-router.post("/getEmployeesData/:id", getEmployee, (req, res) => {});
+router.post("/create_profile_data", getDataCreateProfile, (req, res) => {});
+router.post("/getEmployeesData/", getEmployee, (req, res) => {});
 router.post("/get_vaccancy", getInstituteVaccancy, (req, res) => {});
 router.post("/getEmployeeList", getEmployeeList, (req, res) => {});
 router.post("/insertEmployee", insertEmployee, (req, res) => {});

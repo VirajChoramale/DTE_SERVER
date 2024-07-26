@@ -37,6 +37,7 @@ export const fetchMaritalStatusFormData = async (req, res) => {
 }
 export const fetchEducationFormData = async (req, res) => {
   const response = {};
+
   try {
     response.universities = await executeReadQuery(
       readQueries.getUniversities()
@@ -47,6 +48,7 @@ export const fetchEducationFormData = async (req, res) => {
   } catch (error) {
     response.err = "SQL ERR=> " + error;
   }
+  //console.log(response)
   res.send(response);
 };
 export const fetchExperianceFormData = async (req, res) => {
@@ -125,12 +127,13 @@ export const getMaritialDetails = async (req, res) => {
   return res.send(response)
 }
 export const getEmployeeEducation = async (req, res) => {
+ 
   const response = {};
   try {
     response.employeeEducation=await executeReadQuery(readQueries.getEmployeeEducation(),req.body.employeeID)
-
+    
   } catch (error) {
-    res.status(302);
+    res.status(422);
     response.err = "SQL ERR ==>" + error;
     
   }

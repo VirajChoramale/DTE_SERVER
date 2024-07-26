@@ -7,7 +7,7 @@ import { deleteFromnTable, update_table } from "../utility/Sql_Querries.mjs";
 
 /* create prof -->*/
 export const getDataCreateProfile = async (req, res) => {
-  const inst_id = req.params.id;
+  const inst_id = req.user.inst_id;
   const typ = req.query.type;
   console.log(typ);
   let data = null;
@@ -53,7 +53,8 @@ export const getDataCreateProfile = async (req, res) => {
 };
 
 export const getEmployee = async (req, res) => {
-  const inst_id = req.params.id;
+ 
+  const inst_id = req.user.inst_id;
 
   const eid = req.query.empid;
 
@@ -387,6 +388,7 @@ export const createMaritialStatus = async (req, res) => {
 /* Educational  Details  form(4) */
 
 export const createeducationalDetails = async (req, res) => {
+ 
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;
 
@@ -399,7 +401,7 @@ export const createeducationalDetails = async (req, res) => {
         writeQueries.insertTable("employee_educational_details"),
         education
       );
-      response.education = await executeReadQuery();
+      
     } else if (isEditMode == 1) {
       const education = req.body.data.education;
 
@@ -419,6 +421,7 @@ export const createeducationalDetails = async (req, res) => {
         row
       );
     }
+    response.EmployeeEducation = await executeReadQuery(readQueries.getEmployeeEducation(),employeeId);
   } catch (error) {
     response.err = `SQL Error =>${error}`;
   }
