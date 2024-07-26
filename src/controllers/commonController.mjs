@@ -416,11 +416,11 @@ export const createExperianceDetails = async (req, res) => {
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;
   const response = {};
-  experiance.is_past = 1;
 
   try {
     if (isEditMode == 0) {
       const experiance = req.body.data.experiance;
+      experiance.is_past = 1;
 
       response.createExperiance = await executeWriteQuery(
         writeQueries.insertTable("employee_experiance"),
@@ -428,6 +428,7 @@ export const createExperianceDetails = async (req, res) => {
       );
     } else if (isEditMode == 1) {
       const experiance = req.body.data.experiance;
+      experiance.is_past = 1;
 
       const row = req.body.rowId;
       response.updateExperinace = await update_table(
@@ -450,7 +451,7 @@ export const createExperianceDetails = async (req, res) => {
       employeeId
     );
   } catch (error) {
-    res.status(302).error();
+    res.status(422)
     response.Error = "SQL ERROR => " + error;
   }
   res.send(response);
