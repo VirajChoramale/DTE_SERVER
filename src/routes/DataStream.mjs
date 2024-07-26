@@ -9,7 +9,8 @@ import {
   getEmployeePersonalDetails,
   getMaritialDetails,
   getEmployeeEducation,
-  getOtherDestils
+  getOtherDestils,
+  fetchMaritalStatusFormData
 } from "../controllers/DataStreamPipeline.mjs";
 router.post("/personalDetailsData", personalDetailsData, (req, res) => {});
 router.post(
@@ -17,6 +18,12 @@ router.post(
   fetchEducationFormData,
   (req, res) => {}
 );
+router.post(
+  "/fetchMaritalStatusFormData",
+  fetchMaritalStatusFormData,
+  (req, res) => {}
+);
+
 
 router.post(
   "/fetchExperianceFormData",

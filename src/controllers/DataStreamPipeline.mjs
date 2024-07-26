@@ -25,7 +25,16 @@ export const personalDetailsData = async (req, res) => {
     return res.status(302).send(response);
   }
 };
-
+export const fetchMaritalStatusFormData = async (req, res) => {
+  const response = {};
+  try {
+    response.pwdTypes = await executeReadQuery(readQueries.getPwd());
+  } catch (error) {
+    res.status(422);
+    response.errorMsg = "SQL Error=> " + error;
+  }
+  res.send(response)
+}
 export const fetchEducationFormData = async (req, res) => {
   const response = {};
   try {
