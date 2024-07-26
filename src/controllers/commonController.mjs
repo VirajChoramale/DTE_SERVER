@@ -314,17 +314,19 @@ export const createPersonalDetails = async (req, res) => {
 
 export const createMaritialStatus = async (req, res) => {
   const isEditMode = req.body.isEditMode;
-  const employeeID = req.body.employee_id;
-  const employeeMaritialData = req.body.data.spouseDetails;
-  const isChild = req.body.isChild;
+  
   const response = {};
   try {
     if (isEditMode == 0) {
+      const employeeID = req.body.employee_id;
+  const employeeMaritialData = req.body.data.spouseDetails;
+  const isChild = req.body.isChild;
       response.insertSpouse = await executeWriteQuery(
         writeQueries.insertTable("Employee_spouse"),
         employeeMaritialData
       );
       if (isChild == 1) {
+        
         const childData = req.body.data.childDetails;
         let resArr = [];
         for (const element of childData) {
@@ -338,6 +340,9 @@ export const createMaritialStatus = async (req, res) => {
         response.childResponse = resArr;
       }
     } else if (isEditMode == 1) {
+      const employeeID = req.body.employee_id;
+  const employeeMaritialData = req.body.data.spouseDetails;
+  const isChild = req.body.isChild;
       response.updateSpouse = await update_table(
         "Employee_spouse",
         "employee_id",
@@ -368,8 +373,8 @@ export const createMaritialStatus = async (req, res) => {
         const rowId=req.body.rowID
         response.deleteChild = await deleteFromnTable(
           "Employee_child",
-          "employee_id",
-          employeeID
+          "id",
+          rowId
         );
         response.deletedRowId = rowId;
 
