@@ -345,24 +345,35 @@ export const createMaritialStatus = async (req, res) => {
         Object.keys(employeeMaritialData),
         Object.values(employeeMaritialData)
       );
-    }
-    if (isChild == 1) {
-      response.deleteChild = await deleteFromnTable(
-        "Employee_child",
-        "employee_id",
-        employeeID
-      );
-      const childData = req.body.data.childDetails;
-      let resArr = [];
-      for (const element of childData) {
-        const respond = await executeWriteQuery(
-          writeQueries.insertTable("Employee_child"),
-          element
+    
+      if (isChild == 1) {
+        response.deleteChild = await deleteFromnTable(
+          "Employee_child",
+          "employee_id",
+          employeeID
         );
-        resArr.push(respond);
-      }
+        const childData = req.body.data.childDetails;
+        let resArr = [];
+        for (const element of childData) {
+          const respond = await executeWriteQuery(
+            writeQueries.insertTable("Employee_child"),
+            element
+          );
+          resArr.push(respond);
+        }
+        response.updateChild = resArr;
 
-      response.updateChild = resArr;
+      }
+      else if (isEditMode == 3) {
+        const rowId=req.body.rowID
+        response.deleteChild = await deleteFromnTable(
+          "Employee_child",
+          "employee_id",
+          employeeID
+        );
+        response.deletedRowId = rowId;
+
+      }
     }
 
     return res.send(response);
