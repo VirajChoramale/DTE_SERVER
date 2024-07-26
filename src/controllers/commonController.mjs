@@ -374,20 +374,22 @@ export const createMaritialStatus = async (req, res) => {
 /* Educational  Details  form(4) */
 
 export const createeducationalDetails = async (req, res) => {
-  console.log(req.body.data.education);
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;
-  const education = req.body.data.education;
 
   const response = {};
   try {
     if (isEditMode == 0) {
+      const education = req.body.data.education;
+
       response.insertEducation = await executeWriteQuery(
         writeQueries.insertTable("employee_educational_details"),
         education
       );
       response.education = await executeReadQuery();
     } else if (isEditMode == 1) {
+      const education = req.body.data.education;
+
       const row = req.body.updateRowId;
       response.updateEducation = await update_table(
         "employee_educational_details",
@@ -413,17 +415,20 @@ export const createeducationalDetails = async (req, res) => {
 export const createExperianceDetails = async (req, res) => {
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;
-  const experiance = req.body.data.experiance;
   const response = {};
   experiance.is_past = 1;
 
   try {
     if (isEditMode == 0) {
+      const experiance = req.body.data.experiance;
+
       response.createExperiance = await executeWriteQuery(
         writeQueries.insertTable("employee_experiance"),
         experiance
       );
     } else if (isEditMode == 1) {
+      const experiance = req.body.data.experiance;
+
       const row = req.body.rowId;
       response.updateExperinace = await update_table(
         "employee_experiance",
