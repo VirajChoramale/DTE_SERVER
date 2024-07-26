@@ -314,19 +314,18 @@ export const createPersonalDetails = async (req, res) => {
 
 export const createMaritialStatus = async (req, res) => {
   const isEditMode = req.body.isEditMode;
-  
+
   const response = {};
   try {
     if (isEditMode == 0) {
       const employeeID = req.body.employee_id;
-  const employeeMaritialData = req.body.data.spouseDetails;
-  const isChild = req.body.isChild;
+      const employeeMaritialData = req.body.data.spouseDetails;
+      const isChild = req.body.isChild;
       response.insertSpouse = await executeWriteQuery(
         writeQueries.insertTable("Employee_spouse"),
         employeeMaritialData
       );
       if (isChild == 1) {
-        
         const childData = req.body.data.childDetails;
         let resArr = [];
         for (const element of childData) {
@@ -341,8 +340,8 @@ export const createMaritialStatus = async (req, res) => {
       }
     } else if (isEditMode == 1) {
       const employeeID = req.body.employee_id;
-  const employeeMaritialData = req.body.data.spouseDetails;
-  const isChild = req.body.isChild;
+      const employeeMaritialData = req.body.data.spouseDetails;
+      const isChild = req.body.isChild;
       response.updateSpouse = await update_table(
         "Employee_spouse",
         "employee_id",
@@ -350,7 +349,7 @@ export const createMaritialStatus = async (req, res) => {
         Object.keys(employeeMaritialData),
         Object.values(employeeMaritialData)
       );
-    
+
       if (isChild == 1) {
         response.deleteChild = await deleteFromnTable(
           "Employee_child",
@@ -367,18 +366,16 @@ export const createMaritialStatus = async (req, res) => {
           resArr.push(respond);
         }
         response.updateChild = resArr;
-
-      }
-      else if (isEditMode == 3) {
-        const rowId=req.body.rowID
-        response.deleteChild = await deleteFromnTable(
-          "Employee_child",
-          "id",
-          rowId
-        );
-        response.deletedRowId = rowId;
-
-      }
+      } 
+    }
+    else if (isEditMode == 3) {
+      const rowId = req.body.rowID;
+      response.deleteChild = await deleteFromnTable(
+        "Employee_child",
+        "id",
+        rowId
+      );
+      response.deletedRowId = rowId;
     }
 
     return res.send(response);
@@ -467,7 +464,7 @@ export const createExperianceDetails = async (req, res) => {
       employeeId
     );
   } catch (error) {
-    res.status(422)
+    res.status(422);
     response.Error = "SQL ERROR => " + error;
   }
   res.send(response);
