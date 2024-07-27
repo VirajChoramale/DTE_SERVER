@@ -162,7 +162,42 @@ export const resetPassword =async (req, res) => {
   
 }
 export const verifyOtpPassReset = async () => {
-  
+  const tes = await executeReadQuery(readQueries.getUserInfo(), req.user.uname);
+
+  if (tes[0].latest_otp == req.body.otp) {
+    const token = jsonwebtoken.sign(
+      {
+        uname: req.user.uname,
+        
+      },
+
+      HmacKey,
+      {
+        expiresIn: "5m",
+        algorithm: "HS256",
+      }
+    );
+
+    await update_table(
+      "users_new",
+      "username",
+      req.user.uname,
+      ["latest_otp"],
+      [""]
+    );
+
+    res.setHeader("Authorization", `Bearer ${token}`);
+   
+    res.status(200).json({
+      msg: "Validated",
+      
+    });
+  } else {
+    res.status(200).json({
+      msg: "Invalid Otp",
+      code: "401",
+    });
+  }
 }
 
 

@@ -281,12 +281,14 @@ export const createPersonalDetails = async (req, res) => {
      
     } else if (editMode == 1) {
       if (data.personalDetails.change_in_name == 1) {
-        response.updateNameChange = await update_table(
+        response.deleteChangeInName = await deleteFromnTable(
           "employee_name_change",
           "employee_id",
-          employeeId,
-          Object.keys(data.changeInName),
-          Object.values(data.changeInName)
+          employeeId
+        );
+        response.insertNameChange = await executeWriteQuery(
+          writeQueries.insertTable("employee_name_change"),
+          data.changeInName
         );
       } else if (data.personalDetails.change_in_name == 0) {
         response.deleteChangeInName = await deleteFromnTable(
