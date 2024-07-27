@@ -161,5 +161,9 @@ export const resetPassword =async (req, res) => {
   
   
 }
+export const verifyOtpPassReset = async () => {
+  
+}
+
 
 export { login, verify_otp, verify_user };
