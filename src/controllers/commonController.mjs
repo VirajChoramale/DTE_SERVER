@@ -53,7 +53,6 @@ export const getDataCreateProfile = async (req, res) => {
 };
 
 export const getEmployee = async (req, res) => {
- 
   const inst_id = req.user.inst_id;
 
   const eid = req.query.empid;
@@ -257,11 +256,19 @@ export const createPersonalDetails = async (req, res) => {
   const response = {};
   try {
     if (editMode == 0) {
+      
+      if (data.personalDetails.change_in_name == 1) {
+    
+        response.insertNameChange = await executeWriteQuery(
+          writeQueries.insertTable("employee_name_change"),
+          data.changeInName
+        );
+      }
       response.insertPersonalDetails = await executeWriteQuery(
         writeQueries.insertTable("employee_personal_details"),
         data.personalDetails
       );
-      if (data.personalDetails.caste > 2) {
+      if (data.personalDetails.caste > 1) {
         response.insertCasteDetails = await executeWriteQuery(
           writeQueries.insertTable("employee_cast_details"),
           data.castDetails
@@ -271,7 +278,23 @@ export const createPersonalDetails = async (req, res) => {
         readQueries.getEmpPersonalDetail(),
         employeeId
       );
+     
     } else if (editMode == 1) {
+      if (data.personalDetails.change_in_name == 1) {
+        response.updateNameChange = await update_table(
+          "employee_name_change",
+          "employee_id",
+          employeeId,
+          Object.keys(data.changeInName),
+          Object.values(data.changeInName)
+        );
+      } else if (data.personalDetails.change_in_name == 0) {
+        response.deleteChangeInName = await deleteFromnTable(
+          "employee_name_change",
+          "employee_id",
+          employeeId
+        );
+      }
       response.updatePersonalDetails = await update_table(
         "employee_personal_details",
         "employee_id",
@@ -279,14 +302,14 @@ export const createPersonalDetails = async (req, res) => {
         Object.keys(data.personalDetails),
         Object.values(data.personalDetails)
       );
-      res;
-      if (data.personalDetails.caste <= 2) {
+
+      if (data.personalDetails.caste <= 1) {
         response.deleteCasteDetails = await deleteFromnTable(
           "employee_cast_details",
           "employee_id",
           employeeId
         );
-      } else if (data.personalDetails.caste > 2) {
+      } else if (data.personalDetails.caste > 1) {
         response.updateCasteDetails = await update_table(
           "employee_cast_details",
           "employee_id",
@@ -367,9 +390,8 @@ export const createMaritialStatus = async (req, res) => {
           resArr.push(respond);
         }
         response.updateChild = resArr;
-      } 
-    }
-    else if (isEditMode == 3) {
+      }
+    } else if (isEditMode == 3) {
       const rowId = req.body.rowID;
       response.deleteChild = await deleteFromnTable(
         "Employee_child",
@@ -388,7 +410,6 @@ export const createMaritialStatus = async (req, res) => {
 /* Educational  Details  form(4) */
 
 export const createeducationalDetails = async (req, res) => {
- 
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;
 
@@ -401,7 +422,6 @@ export const createeducationalDetails = async (req, res) => {
         writeQueries.insertTable("employee_educational_details"),
         education
       );
-      
     } else if (isEditMode == 1) {
       const education = req.body.data.education;
 
@@ -421,7 +441,10 @@ export const createeducationalDetails = async (req, res) => {
         row
       );
     }
-    response.EmployeeEducation = await executeReadQuery(readQueries.getEmployeeEducation(),employeeId);
+    response.EmployeeEducation = await executeReadQuery(
+      readQueries.getEmployeeEducation(),
+      employeeId
+    );
   } catch (error) {
     response.err = `SQL Error =>${error}`;
   }

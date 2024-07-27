@@ -142,8 +142,9 @@ readQueries.getUserInfo = () => {
 //---->employee queries
 readQueries.getEmpPersonalDetail = () => {
   return `SELECT epd.*,ecd.caste,ecd.castCertificateNumber,ecd.castCertificateDate,ecd.castCertificateAuthority,ecd.castValidityNumber,ecd.castValidityDate,
-ecd.castValidityAuthority FROM employee_personal_details as epd
+ecd.castValidityAuthority,enc.old_name,enc.gazet_for_name_change,enc.date FROM employee_personal_details as epd
 left join employee_cast_details as ecd on epd.employee_id=ecd.employee_id
+left join employee_name_change as enc on epd.employee_id=enc.employee_id
  where epd.employee_id=?`;
 };
 readQueries.getMaritialDetails = () => {

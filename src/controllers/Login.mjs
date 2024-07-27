@@ -121,5 +121,45 @@ const verify_otp = async (req, res) => {
     });
   }
 };
+export const resetPassword =async (req, res) => {
+  console.log(req.body)
+ 
+    const userName = req.body.username;
+  const user = await executeReadQuery(readQueries.getUserInfo(), userName);
+  if (user[0]) {
+    const uname = user[0].username;
+    const token = jsonwebtoken.sign({ uname }, HmacKey, {
+      expiresIn: "15m",
+      algorithm: "HS256",
+    });
+    let sms_resp = null;
+    const resp_arr = {};
+    await sendOtpSMS(
+      user[0].mobile,
+      user[0].username,
+      user[0].email,
+      user[0].name
+    )
+      .then((res) => {
+        const resp_arr = res.split(",");
+        sms_resp = resp_arr[0];
+      })
+      .catch((e) => console.log("error in sms api" + e));
+
+    if (sms_resp === "402") {
+      resp_arr.msg = `OTP has been successfully sent on ${user[0].mobile} and ${user[0].email}`;
+      resp_arr.statusCode = 200;
+      res.setHeader("Authorization", `Bearer ${token}`);
+    } else {
+      resp_arr.msg = `ERROR!! while sending the OTP, Kindly Contact DTE-IT Cell`;
+      resp_arr.statusCode = 501;
+    }
+    res.status(200).send(resp_arr);
+  } else {
+    res.json(resp);
+  }
+  
+  
+}
 
 export { login, verify_otp, verify_user };
