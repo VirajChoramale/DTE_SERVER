@@ -155,3 +155,14 @@ export const getOtherDestils = async (req, res) => {
   return res.send(response)
 }
 
+export const getEmployeeSpacialPromotion = async (req, res) => {
+  const response = {};
+  const employeeId = req.body.employeeId;
+  try {
+      response.spacialPromotion=await executeReadQuery(readQueries.getEmployeeSpacialPromotion(),employeeId)
+  } catch (error) {
+    res.status(422);
+    response.Error="SQL error =>"+error
+  }
+  res.send(response);
+}

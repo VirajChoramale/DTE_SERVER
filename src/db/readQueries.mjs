@@ -196,4 +196,7 @@ readQueries.getCertificatesByDesig = () => {
         CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate' ELSE '' END )
          AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? GROUP BY designation_id`;
 };
+readQueries.getEmployeeSpacialPromotion = () => {
+  return `SELECT * FROM 10_20_Scheme where employee_id=? `
+}
 export { readQueries };

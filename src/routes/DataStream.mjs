@@ -10,7 +10,8 @@ import {
   getMaritialDetails,
   getEmployeeEducation,
   getOtherDestils,
-  fetchMaritalStatusFormData
+  fetchMaritalStatusFormData,
+  getEmployeeSpacialPromotion
 } from "../controllers/DataStreamPipeline.mjs";
 router.post("/personalDetailsData", personalDetailsData, (req, res) => {});
 router.post(
@@ -36,6 +37,7 @@ router.post("/employeeExperiance", employeeExperiance);
 router.post("/getEmployeeEducation", getEmployeeEducation);
 router.post("/fetchEmployeeCertificate", fetchEmployeeCertificate);
 router.post("/getOtherDestils", getOtherDestils);
+router.post("/getEmployeeSpacialPromotion", getEmployeeSpacialPromotion);
 
 
 
