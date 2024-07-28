@@ -520,21 +520,31 @@ export const createOtherDetails = async (req, res) => {
       }
     } else if (isEditMode == 1) {
       if (isTechnical == 1) {
-        response.updateProbation = await update_table(
-          "employee_probation_details",
+        if (req.body.data.probation.is_probation == 1) {
+          response.updateProbation = await update_table(
+            "employee_probation_details",
+            "employee_id",
+            employeeId,
+            Object.keys(req.body.data.probation),
+            Object.values(req.body.data.probation)
+          );
+        }
+        else if (req.body.data.probation.is_probation == 0) {
+          response.deleteProbation=await deleteFromnTable("employee_probation_details","employee_id",employeeId)
+        }
+      }
+      if (departmentalEnquiry.is_dept_enq == 1) {
+        response.updateDepartmental = await update_table(
+          "employee_deparmental_enquiry_details",
           "employee_id",
           employeeId,
-          Object.keys(req.body.data.probation),
-          Object.values(req.body.data.probation)
+          Object.keys(departmentalEnquiry),
+          Object.values(departmentalEnquiry)
         );
+      } else if(departmentalEnquiry.is_dept_enq == 1){
+        response.deletDeptEnquiry=await deleteFromnTable("employee_deparmental_enquiry_details","employee_id",employeeId)
+
       }
-      response.updateDepartmental = await update_table(
-        "employee_deparmental_enquiry_details",
-        "employee_id",
-        employeeId,
-        Object.keys(departmentalEnquiry),
-        Object.values(departmentalEnquiry)
-      );
       response.updateRetirenmentDetails = await update_table(
         "employee_retirement_details",
         "employee_id",
