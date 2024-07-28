@@ -256,9 +256,7 @@ export const createPersonalDetails = async (req, res) => {
   const response = {};
   try {
     if (editMode == 0) {
-      
       if (data.personalDetails.change_in_name == 1) {
-    
         response.insertNameChange = await executeWriteQuery(
           writeQueries.insertTable("employee_name_change"),
           data.changeInName
@@ -278,7 +276,6 @@ export const createPersonalDetails = async (req, res) => {
         readQueries.getEmpPersonalDetail(),
         employeeId
       );
-     
     } else if (editMode == 1) {
       if (data.personalDetails.change_in_name == 1) {
         response.deleteChangeInName = await deleteFromnTable(
@@ -550,5 +547,33 @@ export const createOtherDetails = async (req, res) => {
     res.status(302);
     response.Error = "SQL ERROR => " + error;
   }
+  return res.send(response);
+};
+export const createSpacialPromotion = async (req, res) => {
+  const response = {};
+  const isEditMode = req.body.isEditMode;
+  const employeeId = req.body.employeeId;
+
+  try {
+    if (isEditMode == 0) {
+      response.insertPromotion = await executeWriteQuery(
+        writeQueries.insertTable("10_20_Scheme"),
+        req.body.data.promotion
+      );
+    } else if (isEditMode == 1) {
+      const promotion = req.body.data.promotion;
+      response.updatePromotion = await update_table(
+        "10_20_Scheme",
+        "employee_id",
+        employeeId,
+        Object.keys(promotion),
+        Object.values(promotion)
+      );
+    }
+  } catch (error) {
+    res.status(422);
+    response.Error = "SQL Error  => " + error;
+  }
+
   return res.send(response);
 };

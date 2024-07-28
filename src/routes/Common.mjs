@@ -13,6 +13,7 @@ import {
   getEmployeeList,
   insertEmployee,
   getPostCountEmp,
+  createSpacialPromotion
 } from "../controllers/commonController.mjs";
 
 router.post("/create_profile_data", getDataCreateProfile, (req, res) => {});
@@ -32,6 +33,8 @@ router.post(
   (req, res) => {}
 );
 router.post("/createExperiance", createExperianceDetails, (req, res) => {});
-router.post("/createOtherDetails", createOtherDetails, (req, res) => {});
+router.post("/createOtherDetails", createOtherDetails, (req, res) => { });
+router.post("/createSpacialPromotion", createSpacialPromotion, (req, res) => {});
+
 
 export default router;
