@@ -156,6 +156,12 @@ export const createEmployee = async (req, res) => {
         );
 
         eid = response.employeeTableInsert.insertId;
+        response.returnEmployeeData = {
+          employeeData,
+          employeeId:response.employeeTableInsert.insertId
+ 
+        }
+        
       } else {
         response.updateEmployee = await update_table(
           "employee",
@@ -166,7 +172,8 @@ export const createEmployee = async (req, res) => {
           Object.values(employee[0])
         );
         response.returnEmployeeData = {
-         employeeData
+          employeeData,
+          employeeId:response.employeeTableInsert.insertId
 
         }
       }
@@ -501,7 +508,27 @@ export const createExperianceDetails = async (req, res) => {
   }
   res.send(response);
 };
+export const createEmployeeCertificates = async (req, res) => {
+  const data = req.body;
+  const extractedData = {};
 
+  Object.keys(data).forEach((certificateName) => {
+    const { issued, issueDate } = data[certificateName];
+    extractedData[certificateName] = issued?1:0;
+    extractedData[`${certificateName}_date`] = issueDate;
+  });
+  extractedData.employee_id = 2446;
+  try {
+    const insertCertificate = await executeWriteQuery(writeQueries.insertTable("employee_certificate_details"),
+    extractedData
+    )
+    console.log(insertCertificate)
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(extractedData);
+  
+}
 export const createOtherDetails = async (req, res) => {
   const employeeId = req.body.employee_id;
   const isEditMode = req.body.isEditMode;

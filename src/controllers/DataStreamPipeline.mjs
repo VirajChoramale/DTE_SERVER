@@ -76,13 +76,14 @@ export const fetchExperianceFormData = async (req, res) => {
 
 export const fetchEmployeeCertificate = async (req, res) => {
   const desigationId = req.body.designationId;
-  console.log(req.body);
   const response = {};
   try {
-    response.cretiFicates = await executeReadQuery(
+    response.cretificates = await executeReadQuery(
       readQueries.getCertificatesByDesig(),
       desigationId
     );
+   
+
   } catch (error) {
     res.status(302);
     response.err = "SQL ERR ==>" + error;
