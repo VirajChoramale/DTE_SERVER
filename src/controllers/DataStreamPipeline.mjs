@@ -2,6 +2,7 @@
 
 import { executeReadQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
+import { select_from_table } from "../utility/Sql_Querries.mjs";
 
 export const personalDetailsData = async (req, res) => {
   const response = {};
@@ -165,4 +166,44 @@ export const getEmployeeSpacialPromotion = async (req, res) => {
     response.Error="SQL error =>"+error
   }
   res.send(response);
+}
+export const getEmployeeFormStatus = async (req, res) => {
+  
+  const formArray = [
+    'employee_personal_details', 
+    "Employee_spouse", 
+    "employee_educational_details",
+    "employee_experiance", 
+    "employee_certificate_details",
+    "employee_probation_details", 
+    "employee_retirement_details", 
+    `10_20_Scheme`
+  ];
+  const response = {};
+  const id = await executeReadQuery("select id from employee where id=2425");
+  if (id[0]) {
+    response["form"+[0]] = id[0]['id'] > 0 ? 1 : 0;
+
+  } else {
+    response["form"[0]] = 0;
+    }
+
+  try {
+    for (let i = 1; i < formArray.length+1; i++){
+      const id = await  executeReadQuery(`select id from ${formArray[i-1]} where employee_id= ?`,req.body.employeeId);
+      // const id = 4; // Placeholder for testing purposes
+      
+      if (id[0]) {
+        
+        response["form"+[i]] = id[0]['id'] > 0 ? 1 : 0;
+
+      } else {
+        response["form"+[i]] = 0;
+        }
+    }
+  } catch (error) {
+    response.err = "SQL error: " + error;
+  }
+  console.log(response);
+  return res.send(response);
 }
