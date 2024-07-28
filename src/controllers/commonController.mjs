@@ -529,11 +529,9 @@ export const createOtherDetails = async (req, res) => {
             Object.values(req.body.data.probation)
           );
         }
-        else if (req.body.data.probation.is_probation == 0) {
-          response.deleteProbation=await deleteFromnTable("employee_probation_details","employee_id",employeeId)
-        }
+       
       }
-      if (departmentalEnquiry.is_dept_enq == 1) {
+      
         response.updateDepartmental = await update_table(
           "employee_deparmental_enquiry_details",
           "employee_id",
@@ -541,10 +539,7 @@ export const createOtherDetails = async (req, res) => {
           Object.keys(departmentalEnquiry),
           Object.values(departmentalEnquiry)
         );
-      } else if(departmentalEnquiry.is_dept_enq == 1){
-        response.deletDeptEnquiry=await deleteFromnTable("employee_deparmental_enquiry_details","employee_id",employeeId)
-
-      }
+      
       response.updateRetirenmentDetails = await update_table(
         "employee_retirement_details",
         "employee_id",
