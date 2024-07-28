@@ -130,6 +130,7 @@ export const createEmployee = async (req, res) => {
         sevarth_no: employeeData.sevarth_no,
         date_of_joining: employeeData.date_of_joining,
         designation_id: post[0].desigation_id,
+       
         course_id: post[0].course_id,
         course_group: post[0].course_group,
         crs_level: post[0].course_level_id,
@@ -164,7 +165,12 @@ export const createEmployee = async (req, res) => {
           Object.keys(employee[0]),
           Object.values(employee[0])
         );
+        response.returnEmployeeData = {
+         employeeData
+
+        }
       }
+     
     } catch (error) {
       response.error = error;
     }
@@ -244,6 +250,7 @@ export const createEmployee = async (req, res) => {
         Object.values(appointmentDetails[0])
       );
     }
+   
     res.send(response);
   }
 };

@@ -121,8 +121,10 @@ const verify_otp = async (req, res) => {
     });
   }
 };
+
+//reset pass request
 export const resetPassword =async (req, res) => {
-  console.log(req.body)
+  
  
     const userName = req.body.username;
   const user = await executeReadQuery(readQueries.getUserInfo(), userName);
@@ -156,12 +158,13 @@ export const resetPassword =async (req, res) => {
     }
     res.status(200).send(resp_arr);
   } else {
-    res.json(resp);
+   
   }
   
   
 }
-export const verifyOtpPassReset = async () => {
+export const verifyOtpPassReset = async (req,res) => {
+ 
   const tes = await executeReadQuery(readQueries.getUserInfo(), req.user.uname);
 
   if (tes[0].latest_otp == req.body.otp) {
@@ -198,6 +201,10 @@ export const verifyOtpPassReset = async () => {
       code: "401",
     });
   }
+}
+export const updatePass = async (req, res) => {
+  
+  res.status(401).send();
 }
 
 
