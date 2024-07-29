@@ -556,6 +556,7 @@ export const createOtherDetails = async (req, res) => {
           writeQueries.insertTable("employee_probation_details"),
           req.body.data.probation
         );
+      }
         response.departmentalInsert = await executeWriteQuery(
           writeQueries.insertTable("employee_deparmental_enquiry_details"),
           departmentalEnquiry
@@ -564,7 +565,7 @@ export const createOtherDetails = async (req, res) => {
           writeQueries.insertTable("employee_retirement_details"),
           retirenmentDetails
         );
-      }
+      
     } else if (isEditMode == 1) {
       if (isTechnical == 1) {
         if (req.body.data.probation.is_probation == 1) {
