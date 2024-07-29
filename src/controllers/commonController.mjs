@@ -130,7 +130,7 @@ export const createEmployee = async (req, res) => {
         sevarth_no: employeeData.sevarth_no,
         date_of_joining: employeeData.date_of_joining,
         designation_id: post[0].desigation_id,
-       
+        employee_type:employeeData.employee_type,
         course_id: post[0].course_id,
         course_group: post[0].course_group,
         crs_level: post[0].course_level_id,
