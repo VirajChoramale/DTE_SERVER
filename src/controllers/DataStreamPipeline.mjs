@@ -128,6 +128,29 @@ export const getMaritialDetails = async (req, res) => {
   }
   return res.send(response)
 }
+export const getEmployeeCertificates = async (req, res) => {
+  
+  const designationId = req.body.designationId||15;
+  const employeeId = req.body.employeeId;
+  try {
+    const response=await executeReadQuery(
+      readQueries.getCertificatesByDesig(),
+      designationId
+    );
+    const certArr = [];
+    const dateArr=[]
+    response[0].required_certificates.split(",").forEach(elem => {
+      if (elem) {
+        certArr.push(elem)
+        certArr.push(elem+"_date")
+     }
+    });
+    const userCert=await select_from_table("employee_certificate_details",certArr,["employee_id"],employeeId)
+    res.send(userCert);
+  } catch (error) {
+    console.log(error)
+  }
+}
 export const getEmployeeEducation = async (req, res) => {
  
   const response = {};

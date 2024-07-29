@@ -509,15 +509,26 @@ export const createExperianceDetails = async (req, res) => {
   res.send(response);
 };
 export const createEmployeeCertificates = async (req, res) => {
-  const data = req.body;
+  const data = req.body.dataToSubmit;
+ 
+  const employeeId = req.body.employeeId;
   const extractedData = {};
+  if (req.body.isEditMode == 1) {
+    try {
+      const del = await deleteFromnTable("employee_certificate_details", "employee_id", employeeId);
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+ 
 
   Object.keys(data).forEach((certificateName) => {
     const { issued, issueDate } = data[certificateName];
     extractedData[certificateName] = issued?1:0;
     extractedData[`${certificateName}_date`] = issueDate;
   });
-  extractedData.employee_id = 2446;
+  extractedData.employee_id = employeeId
   try {
     const insertCertificate = await executeWriteQuery(writeQueries.insertTable("employee_certificate_details"),
     extractedData

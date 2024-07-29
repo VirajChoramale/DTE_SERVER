@@ -20,10 +20,10 @@ const update_table = async (
 };
 const select_from_table = async (tableName, select_col, where_colm, key) => {
   try {
-    const where_col = where_colm.map((col) => `${col}=?`).join("AND");
-    const sel_cols = select_col.map((col) => `${col} = ?`).join(" , ");
+    const whereCondition = where_colm.map((col) => `${col} = ?`).join(" AND ");
+    const selectColumns = select_col.join(", ");
 
-    const query = `SELECT ${sel_cols} FROM ${tableName} WHERE ${where_col} ?`;
+    const query = `SELECT ${selectColumns} FROM ${tableName} WHERE ${whereCondition}`;
     const [rows] = await executeReadQuery(query, key);
     return rows;
   } catch (error) {
