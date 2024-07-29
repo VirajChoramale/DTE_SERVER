@@ -109,10 +109,10 @@ export const createEmployee = async (req, res) => {
   const is_inst = req.user.is_inst;
   let eid = null;
   const response = {};
-  const emp_ct = await executeReadQuery(readQueries.getPostCountEmp(), 15);
+  const emp_ct = await executeReadQuery(readQueries.getPostCountEmp(), employeeData.post_id);
   const post = await executeReadQuery(
     readQueries.getPost(),
-    15 // employeeData.post_id
+   employeeData.post_id
   );
 
   if (emp_ct.count < post[0].filled_post) {
