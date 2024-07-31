@@ -610,17 +610,18 @@ export const createSpacialPromotion = async (req, res) => {
   try {
     if (isEditMode == 0) {
       response.insertPromotion = await executeWriteQuery(
-        writeQueries.insertTable("10_20_Scheme"),
+        writeQueries.insertTable("timebound_10_20_promotion"),
         req.body.data.promotion
       );
     } else if (isEditMode == 1) {
-      const promotion = req.body.data.promotion;
-      response.updatePromotion = await update_table(
-        "10_20_Scheme",
+      response.delReq = await deleteFromnTable(
+        "timebound_10_20_promotion",
         "employee_id",
-        employeeId,
-        Object.keys(promotion),
-        Object.values(promotion)
+        employeeId
+      );
+      response.insertPromotion = await executeWriteQuery(
+        writeQueries.insertTable("timebound_10_20_promotion"),
+        req.body.data.promotion
       );
     }
   } catch (error) {
