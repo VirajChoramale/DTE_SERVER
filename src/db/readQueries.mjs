@@ -9,7 +9,7 @@ readQueries.getEmployee = () => {
   return "select * from employee where id = ?";
 };
 readQueries.getInstEmployee = () => {
-  return `select case when dm.class='A' THEN 1 WHEN dm.class='C' OR dm.class='D' THEN 2 end  as tech_type ,emp.id,emp.title,emp.full_name,dm.designation_name,
+  return `select case when dm.class='A' THEN 1 WHEN dm.class='C' OR dm.class='D' THEN 2 end  as tech_type ,emp.employee_type,emp.sevarth_no,emp.id,emp.designation_id,emp.title,emp.full_name,dm.designation_name,
 case when emp.course_id=0 OR emp.course_id=NULL then "-" END as coursename,crs.coursename,cg.course_group_name_eng as course_group from employee as emp
 left join designation_master as dm on emp.designation_id=dm.id 
 left join course_group as cg on emp.course_group=cg.id
@@ -142,8 +142,9 @@ readQueries.getUserInfo = () => {
 //---->employee queries
 readQueries.getEmpPersonalDetail = () => {
   return `SELECT epd.*,ecd.caste,ecd.castCertificateNumber,ecd.castCertificateDate,ecd.castCertificateAuthority,ecd.castValidityNumber,ecd.castValidityDate,
-ecd.castValidityAuthority FROM employee_personal_details as epd
+ecd.castValidityAuthority,enc.old_name,enc.gazet_for_name_change,enc.date FROM employee_personal_details as epd
 left join employee_cast_details as ecd on epd.employee_id=ecd.employee_id
+left join employee_name_change as enc on epd.employee_id=enc.employee_id
  where epd.employee_id=?`;
 };
 readQueries.getMaritialDetails = () => {
@@ -195,4 +196,7 @@ readQueries.getCertificatesByDesig = () => {
         CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate' ELSE '' END )
          AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? GROUP BY designation_id`;
 };
+readQueries.getEmployeeSpacialPromotion = () => {
+  return `SELECT * FROM 10_20_Scheme where employee_id=? `
+}
 export { readQueries };

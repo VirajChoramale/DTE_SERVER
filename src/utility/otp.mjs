@@ -39,10 +39,9 @@ function generateKey(message) {
 }
 
 async function sendOtpSMS(mobileno, uname, email, name) {
-  const OTP = 12345; //generateOtp();
+  const OTP = generateOtp();
   const message = `Dear S/M, OTP for EMIS is :  ${OTP} Thank you , DTE, Mumbai`;
-  const emailResponse = SendGmail(2, email, [name, OTP]);
-  console.log(emailResponse);
+  const emailResponse =   SendGmail(2, email, [name, OTP]);
   const encryp_password = crypto
     .createHash("sha1")
     .update(password)

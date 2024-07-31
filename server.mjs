@@ -12,6 +12,10 @@ import Common from "./src/routes/Common.mjs";
 import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
 import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
 import { SendGmail } from "./src/utility/sendGmail.mjs";
+import { collectDefaultMetrics, register, Histogram } from "prom-client";
+import responseTime from "response-time";
+import { time } from "node:console";
+import { executeReadQuery } from "./src/db/db_operation.mjs";
 configDotenv();
 const app = express();
 
@@ -27,7 +31,7 @@ if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
   // Fork workers for each available CPU
-  const availableCPUs = [1]; //cpus();
+  const availableCPUs = [1]//cpus();
 
   availableCPUs.forEach((cpu, index) => forkWorker());
 
@@ -57,17 +61,23 @@ if (cluster.isPrimary) {
   }
 } else {
   app.use(express.json());
+  collectDefaultMetrics();
+  const reqRest = new Histogram({
+    name: "http_express_req_res_time",
+    help: "Req times",
+    labelNames: ["method", "route", "status_code"],
+    buckets: [1, 50, 100, 200, 400, 500, 800, 1000, 2000],
+  });
+  app.use(
+    responseTime((req, res, time) => {
+      reqRest
+        .labels(req.method, req.url, res.statusCode.toString())
+        .observe(time);
+    })
+  );
   app.use(
     cors({
-      origin: [
-        "http://localhost:5173",
-        "http://192.168.3.52:5173",
-        "http://127.0.0.1:5173",
-        "http://192.168.2.244:5175",
-        "http://49.248.37.122:5173",
-        "http://49.248.37.122",
-        "http://localhost:4173",
-      ],
+      origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
       credentials: true, // Allow cookies for cross-origin requests (if applicable)
       methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
       allowedHeaders: [
@@ -82,6 +92,11 @@ if (cluster.isPrimary) {
       // Allowed headers
     })
   );
+  app.get("/metrics", async (req, res) => {
+    res.setHeader("Content-Type", register.contentType);
+    const metrics = register.metrics();
+    res.send(metrics);
+  });
   app.post("/getKeyRedux", async (req, res) => {
     //sending key for redux
     res.json({ key: await KeyGen() });
@@ -90,7 +105,7 @@ if (cluster.isPrimary) {
   //Institute Route
   app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});
   //Commo Route
-  app.use("/Common", verifyToken,Common, () => {});
+  app.use("/Common", verifyToken, Common, () => {});
   //DataStreamPipeline
   app.use("/DataPipeline", verifyToken, DataStream);
 
@@ -105,6 +120,7 @@ if (cluster.isPrimary) {
       await SendGmail(2, "viraj.choramale@bynaric.in", ["Viraj", "test"])
     );
   });
+
   app.post("/bcrypt_text", async (req, res) => {
     const bcrypted_text = bcrypt_text(req.body.text);
     res.send({
@@ -118,6 +134,7 @@ if (cluster.isPrimary) {
       msg: `Server Running on Port==>${PORT}`,
     });
   });
+
   app.listen(PORT, () => {
     console.log(`server started on ${PORT} ${process.pid}`);
   });
