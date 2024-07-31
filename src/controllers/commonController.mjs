@@ -445,7 +445,7 @@ export const createExperianceDetails = async (req, res) => {
       employeeId
     );
   } catch (error) {
-    res.status(302).error();
+    res.statuscode(302).error();
     response.Error = "SQL ERROR => " + error;
   }
   res.send(response);
