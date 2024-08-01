@@ -71,8 +71,8 @@ readQueries.getEducationalBoards = () => {
   return "SELECT * FROM education_boards";
 };
 readQueries.getDteOffices = () => {
-  return "select * from office_master where is_institute=2"
-}
+  return "select * from office_master where is_institute=2";
+};
 //---->Designation<-----------//
 readQueries.getDesignations = () => {
   return "select * from designation_master";
@@ -139,7 +139,7 @@ readQueries.getUserInfo = () => {
   return "select latest_otp,role,inst_id,is_inst,username,name,password,email,mobile from users_new where username=?";
 };
 
-//---->employee queries
+//---->employee queries(for office)
 readQueries.getEmpPersonalDetail = () => {
   return `SELECT epd.*,ecd.caste,ecd.castCertificateNumber,ecd.castCertificateDate,ecd.castCertificateAuthority,ecd.castValidityNumber,ecd.castValidityDate,
 ecd.castValidityAuthority,enc.old_name,enc.gazet_for_name_change,enc.date FROM employee_personal_details as epd
@@ -148,14 +148,14 @@ left join employee_name_change as enc on epd.employee_id=enc.employee_id
  where epd.employee_id=?`;
 };
 readQueries.getMaritialDetails = () => {
-  return `select * from Employee_spouse where employee_id=?`
-}
+  return `select * from Employee_spouse where employee_id=?`;
+};
 readQueries.getChildData = () => {
-  return `select * from Employee_child where employee_id=?`
-}
+  return `select * from Employee_child where employee_id=?`;
+};
 readQueries.getEmployeeEducation = () => {
-  return `select * from employee_educational_details where employee_id=?`
-}
+  return `select * from employee_educational_details where employee_id=?`;
+};
 readQueries.getEmployeeCurrentDetails = () => {
   //employee current experiance (inst_id required)
   return `SELECT emp.*,exp.mode_of_inst_joining,exp.appointment_type,exp.letter_no as current_posting_letter_number,exp.order_date,
@@ -175,28 +175,33 @@ left join appointment_type on exp.appointment_type=appointment_type.id
 WHERE exp.employee_id=? and exp.is_past=1;`;
 };
 readQueries.getEmployeeProbation = () => {
-  return `select * from employee_probation_details where employee_id=?`
-}
+  return `select * from employee_probation_details where employee_id=?`;
+};
 readQueries.getEmployeeRetirenment = () => {
-  return `select * from employee_retirement_details where employee_id=?`
-}
+  return `select * from employee_retirement_details where employee_id=?`;
+};
 readQueries.getDepartMentalEnquiry = () => {
-  return `select * from employee_deparmental_enquiry_details where employee_id=?`
-}
+  return `select * from employee_deparmental_enquiry_details where employee_id=?`;
+};
 
 readQueries.getCertificatesByDesig = () => {
   return `SELECT designation_id, CONCAT( CASE WHEN medical_certificate = 1 THEN 'medical_certificate,' ELSE '' END,
    CASE WHEN mscit_certificate = 1 THEN 'mscit_certificate,' ELSE '' END,
     CASE WHEN language_exemption = 1 THEN 'language_exemption,' ELSE '' END,
      CASE WHEN steno_speed_certificate = 1 THEN 'steno_speed_certificate,' ELSE '' END,
-      CASE WHEN marathi_typing = 1 THEN 'marathi_typing' ELSE '' END, 
-      CASE WHEN english_typing = 1 THEN 'english_typing' ELSE '' END,
+      CASE WHEN marathi_typing = 1 THEN 'marathi_typing,' ELSE '' END, 
+      CASE WHEN english_typing = 1 THEN 'english_typing,' ELSE '' END,
        CASE WHEN permanent_certificate = 1 THEN 'permanent_certificate,' ELSE '' END,
         CASE WHEN police_verification = 1 THEN 'police_verification,' ELSE '' END, 
-        CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate' ELSE '' END )
+        CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate,' ELSE '' END )
          AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? GROUP BY designation_id`;
 };
 readQueries.getEmployeeSpacialPromotion = () => {
-  return `SELECT * FROM 10_20_Scheme where employee_id=? `
-}
+  return `SELECT * FROM timebound_10_20_promotion where employee_id=? `;
+};
+//----> employee_queries(for emp login)
+
+readQueries.getEmployeeProfile = () => {
+  return;
+};
 export { readQueries };
