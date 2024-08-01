@@ -189,8 +189,8 @@ readQueries.getCertificatesByDesig = () => {
    CASE WHEN mscit_certificate = 1 THEN 'mscit_certificate,' ELSE '' END,
     CASE WHEN language_exemption = 1 THEN 'language_exemption,' ELSE '' END,
      CASE WHEN steno_speed_certificate = 1 THEN 'steno_speed_certificate,' ELSE '' END,
-      CASE WHEN marathi_typing = 1 THEN 'marathi_typing_certificate,' ELSE '' END, 
-      CASE WHEN english_typing = 1 THEN 'english_typing_certificate,' ELSE '' END,
+      CASE WHEN marathi_typing_certificate = 1 THEN 'marathi_typing_certificate,' ELSE '' END, 
+      CASE WHEN english_typing_certificate = 1 THEN 'english_typing_certificate,' ELSE '' END,
        CASE WHEN permanent_certificate = 1 THEN 'permanent_certificate,' ELSE '' END,
         CASE WHEN police_verification = 1 THEN 'police_verification,' ELSE '' END, 
         CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate,' ELSE '' END )
