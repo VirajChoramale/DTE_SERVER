@@ -526,9 +526,10 @@ export const createEmployeeCertificates = async (req, res) => {
   }
 
   Object.keys(data).forEach((certificateName) => {
-    const { issued, issueDate } = data[certificateName];
+    const { issued, issueDate, issueNo } = data[certificateName];
     extractedData[certificateName] = issued ? 1 : 0;
     extractedData[`${certificateName}_date`] = issueDate;
+    extractedData[`${certificateName}_no`] = issueNo;
   });
   extractedData.employee_id = employeeId;
   try {
