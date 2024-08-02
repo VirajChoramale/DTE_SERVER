@@ -533,8 +533,8 @@ export const createEmployeeCertificates = async (req, res) => {
     extractedData[`${certificateName}_no`] = issueNo;
   });
   extractedData.employee_id = employeeId;
-  extractedData.mscit_certificate_exemp_no = req.body.dataToSubmit.mscit_certificate_exemp_no || null;
-  extractedData.mscit_exemp_date = req.body.dataToSubmit.mscit_exemp_date || null;
+  extractedData.mscit_certificate_exemp_no = req.body.execemptions.mscit_certificate_exemp_no || null;
+  extractedData.mscit_exemp_date = req.body.execemptions.mscit_exemp_date || null;
 
   
   try {
