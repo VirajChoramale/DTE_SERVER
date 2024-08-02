@@ -34,8 +34,8 @@ export const getDataCreateProfile = async (req, res) => {
   const employement_query = `SELECT * FROM employbility_status`;
   const leave_query = "SELECT * FROM `leave_reason`";
   const app_query = "SELECT * FROM category";
-  const dteOffice_loc = "select * from dte_offices";
-  const dteOffices = await executeReadQuery(readQueries.getOffice());
+  const dteOffice_loc = "select * from office_master";
+  const dteOffices = await executeReadQuery(dteOffice_loc);
   const app_category = await executeReadQuery(app_query);
   const leave_reason = await executeReadQuery(leave_query);
   const employement_status = await executeReadQuery(employement_query);
