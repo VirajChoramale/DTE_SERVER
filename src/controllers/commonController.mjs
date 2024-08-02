@@ -509,6 +509,7 @@ export const createExperianceDetails = async (req, res) => {
 };
 export const createEmployeeCertificates = async (req, res) => {
   const data = req.body.dataToSubmit;
+
   const response = {};
   const employeeId = req.body.employeeId;
   const extractedData = {};
@@ -532,6 +533,10 @@ export const createEmployeeCertificates = async (req, res) => {
     extractedData[`${certificateName}_no`] = issueNo;
   });
   extractedData.employee_id = employeeId;
+  extractedData.mscit_certificate_exemp_no = req.body.dataToSubmit.mscit_certificate_exemp_no || null;
+  extractedData.mscit_exemp_date = req.body.dataToSubmit.mscit_exemp_date || null;
+
+  
   try {
     const insertCertificate = await executeWriteQuery(
       writeQueries.insertTable("employee_certificate_details"),

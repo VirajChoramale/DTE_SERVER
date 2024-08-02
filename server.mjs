@@ -33,7 +33,7 @@ if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
   // Fork workers for each available CPU
-  const availableCPUs = [1]; //cpus();
+  const availableCPUs = cpus();
 
   availableCPUs.forEach((cpu, index) => forkWorker());
 
