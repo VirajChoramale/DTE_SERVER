@@ -1,9 +1,23 @@
 //this controller is pipeline for common datafetching for all users like casteMaster, mothertoungeMaster, imageFetch etc(CDN)
 
-import { executeReadQuery } from "../db/db_operation.mjs";
+import { response } from "express";
+import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
 import { select_from_table } from "../utility/Sql_Querries.mjs";
+//----> singleAPI
+export const getDesignations = async(req,res) => {
+  const response = {};
+  try {
+    response.designations = await executeWriteQuery(readQueries.getDesignations());
 
+  } catch (error) {
+    res.send(422)
+    response.err="SQL ERR"+error
+  }
+  res.send(response);
+}
+
+//<------
 export const personalDetailsData = async (req, res) => {
   const response = {};
   try {
@@ -253,6 +267,6 @@ export const getEmployeeFormStatus = async (req, res) => {
   } catch (error) {
     response.err = "SQL error: " + error;
   }
-  console.log(response);
+  
   return res.send(response);
 };
