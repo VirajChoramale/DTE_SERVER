@@ -34,8 +34,8 @@ export const fetchMaritalStatusFormData = async (req, res) => {
     res.status(422);
     response.errorMsg = "SQL Error=> " + error;
   }
-  res.send(response)
-}
+  res.send(response);
+};
 export const fetchEducationFormData = async (req, res) => {
   const response = {};
 
@@ -63,8 +63,10 @@ export const fetchExperianceFormData = async (req, res) => {
     response.designations = await executeReadQuery(
       readQueries.getDesignations()
     );
-    
-    response.deputationLocation = await executeReadQuery(readQueries.getDteOffices());
+
+    response.deputationLocation = await executeReadQuery(
+      readQueries.getDteOffices()
+    );
     response.courses = await executeReadQuery(readQueries.getCourseGroups());
   } catch (error) {
     response.err = "SQL ERROR => " + error;
@@ -82,8 +84,6 @@ export const fetchEmployeeCertificate = async (req, res) => {
       readQueries.getCertificatesByDesig(),
       desigationId
     );
-   
-
   } catch (error) {
     res.status(302);
     response.err = "SQL ERR ==>" + error;
@@ -107,127 +107,152 @@ export const employeeExperiance = async (req, res) => {
 export const getEmployeePersonalDetails = async (req, res) => {
   const response = {};
   try {
-    response.employeePersonalDetails=await executeReadQuery(readQueries.getEmpPersonalDetail(),req.body.employeeID)
+    response.employeePersonalDetails = await executeReadQuery(
+      readQueries.getEmpPersonalDetail(),
+      req.body.employeeID
+    );
   } catch (error) {
     res.status(302);
     response.err = "SQL ERR ==>" + error;
-    
   }
-  return res.send(response)
-}
+  return res.send(response);
+};
 export const getMaritialDetails = async (req, res) => {
   const response = {};
   try {
-    response.maritialDetails=await executeReadQuery(readQueries.getMaritialDetails(),req.body.employeeID)
-    response.childData=await executeReadQuery(readQueries.getChildData(),req.body.employeeID)
-
+    response.maritialDetails = await executeReadQuery(
+      readQueries.getMaritialDetails(),
+      req.body.employeeID
+    );
+    response.childData = await executeReadQuery(
+      readQueries.getChildData(),
+      req.body.employeeID
+    );
   } catch (error) {
     res.status(302);
     response.err = "SQL ERR ==>" + error;
-    
   }
-  return res.send(response)
-}
+  return res.send(response);
+};
 export const getEmployeeCertificates = async (req, res) => {
-  
-  const designationId = req.body.designationId||15;
+  const designationId = req.body.designationId;
   const employeeId = req.body.employeeId;
   try {
-    const response=await executeReadQuery(
+    const response = await executeReadQuery(
       readQueries.getCertificatesByDesig(),
       designationId
     );
     const certArr = [];
-    const dateArr=[]
-    response[0].required_certificates.split(",").forEach(elem => {
+    const dateArr = [];
+    response[0].required_certificates.split(",").forEach((elem) => {
       if (elem) {
-        certArr.push(elem)
-        certArr.push(elem+"_date")
-     }
+        certArr.push(elem);
+        certArr.push(elem + "_date");
+      }
     });
-    const userCert=await select_from_table("employee_certificate_details",certArr,["employee_id"],employeeId)
+
+    // const userCert = await select_from_table(
+    //   "employee_certificate_details",
+    //   certArr,
+    //   ["employee_id"],
+    //   employeeId
+    // );
+    const userCert = await executeReadQuery(
+      `select * from employee_certificate_details where employee_id=${employeeId}`
+    );
     res.send(userCert);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 export const getEmployeeEducation = async (req, res) => {
- 
   const response = {};
   try {
-    response.employeeEducation=await executeReadQuery(readQueries.getEmployeeEducation(),req.body.employeeID)
-    
+    response.employeeEducation = await executeReadQuery(
+      readQueries.getEmployeeEducation(),
+      req.body.employeeID
+    );
   } catch (error) {
     res.status(422);
     response.err = "SQL ERR ==>" + error;
-    
   }
-  return res.send(response)
-}
+  return res.send(response);
+};
 export const getOtherDestils = async (req, res) => {
   const response = {};
   try {
-    response.probationDetails=await executeReadQuery(readQueries.getEmployeeProbation(),req.body.employeeID)
-    response.retirenmentDetails=await executeReadQuery(readQueries.getEmployeeRetirenment(),req.body.employeeID)
-    response.getDepartMentalEnquiry=await executeReadQuery(readQueries.getDepartMentalEnquiry(),req.body.employeeID)
-
-    
+    response.probationDetails = await executeReadQuery(
+      readQueries.getEmployeeProbation(),
+      req.body.employeeID
+    );
+    response.retirenmentDetails = await executeReadQuery(
+      readQueries.getEmployeeRetirenment(),
+      req.body.employeeID
+    );
+    response.getDepartMentalEnquiry = await executeReadQuery(
+      readQueries.getDepartMentalEnquiry(),
+      req.body.employeeID
+    );
   } catch (error) {
     res.status(302);
     response.err = "SQL ERR ==>" + error;
-    
   }
-  return res.send(response)
-}
+  return res.send(response);
+};
 
 export const getEmployeeSpacialPromotion = async (req, res) => {
   const response = {};
   const employeeId = req.body.employeeId;
   try {
-      response.spacialPromotion=await executeReadQuery(readQueries.getEmployeeSpacialPromotion(),employeeId)
+    response.spacialPromotion = await executeReadQuery(
+      readQueries.getEmployeeSpacialPromotion(),
+      employeeId
+    );
   } catch (error) {
     res.status(422);
-    response.Error="SQL error =>"+error
+    response.Error = "SQL error =>" + error;
   }
   res.send(response);
-}
+};
 export const getEmployeeFormStatus = async (req, res) => {
-  
+  const employeeId = req.body.employeeId;
   const formArray = [
-    'employee_personal_details', 
-    "Employee_spouse", 
+    "employee_personal_details",
+    "Employee_spouse",
     "employee_educational_details",
-    "employee_experiance", 
+    "employee_experiance",
     "employee_certificate_details",
-    "employee_probation_details", 
-    "employee_retirement_details", 
-    `10_20_Scheme`
+    "employee_probation_details",
+    "employee_retirement_details",
+    `10_20_Scheme`,
   ];
   const response = {};
-  const id = await executeReadQuery("select id from employee where id=2425");
+  const id = await executeReadQuery(
+    `select id from employee where id= ${employeeId}`
+  );
   if (id[0]) {
-    response["form"+[0]] = id[0]['id'] > 0 ? 1 : 0;
-
+    response["form" + [0]] = id[0]["id"] > 0 ? 1 : 0;
   } else {
     response["form"[0]] = 0;
-    }
+  }
 
   try {
-    for (let i = 1; i < formArray.length+1; i++){
-      const id = await  executeReadQuery(`select id from ${formArray[i-1]} where employee_id= ?`,req.body.employeeId);
+    for (let i = 1; i < formArray.length + 1; i++) {
+      const id = await executeReadQuery(
+        `select id from ${formArray[i - 1]} where employee_id= ?`,
+        req.body.employeeId
+      );
       // const id = 4; // Placeholder for testing purposes
-      
-      if (id[0]) {
-        
-        response["form"+[i]] = id[0]['id'] > 0 ? 1 : 0;
 
+      if (id[0]) {
+        response["form" + [i]] = id[0]["id"] > 0 ? 1 : 0;
       } else {
-        response["form"+[i]] = 0;
-        }
+        response["form" + [i]] = 0;
+      }
     }
   } catch (error) {
     response.err = "SQL error: " + error;
   }
   console.log(response);
   return res.send(response);
-}
+};
