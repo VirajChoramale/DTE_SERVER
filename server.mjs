@@ -118,10 +118,6 @@ if (cluster.isPrimary) {
   app.use("/DataPipeline", verifyToken, DataStream);
 
   app.use("/Desk", Desk, () => {});
-  app.post("/testHeader", (req, res) => {
-    res.setHeader("Authorization", `Bearer ${10012}`);
-    res.send("token set");
-  });
 
   app.get("/test_mail", verifyToken, async (req, res) => {
     const gmail = req.body.gmail;
