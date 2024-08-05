@@ -105,12 +105,18 @@ if (cluster.isPrimary) {
   });
   app.use("/auth", User, () => {});
   //Institute Route
-  app.use("/Institute", verifyToken, Auth_req(["INST"]), Institute, () => {});
+  app.use(
+    "/Institute",
+    verifyToken,
+    Auth_req(["INSTITUTE"]),
+    Institute,
+    () => {}
+  );
   //Commo Route
   app.use(
     "/Common",
     verifyToken,
-    Auth_req(["INST", "RO", "MSBTE"]),
+    Auth_req(["INSTITUTE", "RO", "MSBTE"]),
     Common,
     () => {}
   );
