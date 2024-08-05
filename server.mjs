@@ -105,9 +105,13 @@ if (cluster.isPrimary) {
   });
   app.use("/auth", User, () => {});
   //Institute Route
-  app.use("/Institute", verifyToken, Auth_req("INST"), Institute, () => {});
+  app.use("/Institute", verifyToken, Auth_req(["INST"]), Institute, () => {});
   //Commo Route
-  app.use("/Common", verifyToken, Common, () => {});
+  app.use(
+    "/Common",
+    verifyToken,
+    Auth_req(["INST", "RO", "MSBTE", "RBTE", "ADMIN"], Common, () => {})
+  );
   //DataStreamPipeline
   app.use("/DataPipeline", verifyToken, DataStream);
 

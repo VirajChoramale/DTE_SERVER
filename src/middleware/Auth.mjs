@@ -33,7 +33,7 @@ const verifyToken = async (req, res, next) => {
 
 const Auth_req = (role) => {
   return (req, res, next) => {
-    if (req.user.role != role) {
+    if (!role.includes(req.user.role)) {
       return res.status(401).send({
         msg: "Access denied!!",
         status: 401,
