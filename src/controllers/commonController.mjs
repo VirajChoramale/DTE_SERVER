@@ -34,7 +34,7 @@ export const getDataCreateProfile = async (req, res) => {
   const employement_query = `SELECT * FROM employbility_status`;
   const leave_query = "SELECT * FROM `leave_reason`";
   const app_query = "SELECT * FROM category";
-  const dteOffice_loc = "select * from dte_offices";
+  const dteOffice_loc = "select * from office_master";
   const dteOffices = await executeReadQuery(dteOffice_loc);
   const app_category = await executeReadQuery(app_query);
   const leave_reason = await executeReadQuery(leave_query);
@@ -509,6 +509,7 @@ export const createExperianceDetails = async (req, res) => {
 };
 export const createEmployeeCertificates = async (req, res) => {
   const data = req.body.dataToSubmit;
+
   const response = {};
   const employeeId = req.body.employeeId;
   const extractedData = {};
@@ -532,6 +533,9 @@ export const createEmployeeCertificates = async (req, res) => {
     extractedData[`${certificateName}_no`] = issueNo;
   });
   extractedData.employee_id = employeeId;
+  extractedData.mscit_certificate_exemp_no =req.body.exemptions.mscit_certificate_exemp_no || null;
+extractedData.mscit_exemp_date = req.body.exemptions.mscit_exemp_date || null;
+  
   try {
     const insertCertificate = await executeWriteQuery(
       writeQueries.insertTable("employee_certificate_details"),

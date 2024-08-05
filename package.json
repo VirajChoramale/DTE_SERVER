@@ -5,7 +5,8 @@
   "main": "server.mjs",
   "scripts": {
     "start:dev": "nodemon server.mjs",
-    "start:prod": "node server.mjs"
+    "start:prod": "node server.mjs",
+    "build": "babel src -d dist && terser dist/*.js -o dist/bundle.min.js"
   },
   "author": "",
   "license": "ISC",
