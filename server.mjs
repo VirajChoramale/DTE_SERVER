@@ -33,7 +33,7 @@ if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
   // Fork workers for each available CPU
-  const availableCPUs = cpus();
+  const availableCPUs = [1]; // cpus();
 
   availableCPUs.forEach((cpu, index) => forkWorker());
 
@@ -110,7 +110,9 @@ if (cluster.isPrimary) {
   app.use(
     "/Common",
     verifyToken,
-    Auth_req(["INST", "RO", "MSBTE", "RBTE", "ADMIN"], Common, () => {})
+    Auth_req(["INST", "RO", "MSBTE"]),
+    Common,
+    () => {}
   );
   //DataStreamPipeline
   app.use("/DataPipeline", verifyToken, DataStream);
@@ -121,10 +123,9 @@ if (cluster.isPrimary) {
     res.send("token set");
   });
 
-  app.get("/gmail", async (req, res) => {
-    res.send(
-      await SendGmail(2, "viraj.choramale@bynaric.in", ["Viraj", "test"])
-    );
+  app.get("/test_mail", verifyToken, async (req, res) => {
+    const gmail = req.body.gmail;
+    res.send(await SendGmail(2, gmail, ["Viraj", "test"]));
   });
 
   app.post("/bcrypt_text", async (req, res) => {
