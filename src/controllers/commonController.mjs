@@ -528,14 +528,15 @@ export const createEmployeeCertificates = async (req, res) => {
 
   Object.keys(data).forEach((certificateName) => {
     const { issued, issueDate, issueNo } = data[certificateName];
-    extractedData[certificateName] = issued ? 1 : 0;
+    extractedData[certificateName] = issued;
     extractedData[`${certificateName}_date`] = issueDate;
     extractedData[`${certificateName}_no`] = issueNo;
   });
   extractedData.employee_id = employeeId;
-  extractedData.mscit_certificate_exemp_no =req.body.exemptions.mscit_certificate_exemp_no || null;
-extractedData.mscit_exemp_date = req.body.exemptions.mscit_exemp_date || null;
-  
+  extractedData.mscit_certificate_exemp_no =
+    req.body.exemptions.mscit_certificate_exemp_no || null;
+  extractedData.mscit_exemp_date = req.body.exemptions.mscit_exemp_date || null;
+
   try {
     const insertCertificate = await executeWriteQuery(
       writeQueries.insertTable("employee_certificate_details"),
