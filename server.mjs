@@ -6,7 +6,7 @@ import { configDotenv } from "dotenv";
 import User from "./src/routes/User.mjs";
 import Institute from "./src/routes/Institute.mjs";
 import DataStream from "./src/routes/DataStream.mjs";
-import xlsx from "xlsx";
+import readXlsxFile from "read-excel-file/node";
 import Desk from "./src/routes/Desk.mjs";
 import Common from "./src/routes/Common.mjs";
 import { Auth_req, verifyToken } from "./src/middleware/Auth.mjs";
@@ -14,9 +14,10 @@ import { bcrypt_text } from "./src/utility/bcrypt_js.mjs";
 import { SendGmail } from "./src/utility/sendGmail.mjs";
 import { collectDefaultMetrics, register, Histogram } from "prom-client";
 import responseTime from "response-time";
-import { time } from "node:console";
-import { executeReadQuery } from "./src/db/db_operation.mjs";
+import { count, time } from "node:console";
+import { executeReadQuery, executeWriteQuery } from "./src/db/db_operation.mjs";
 import { deleteFromnTable, update_table } from "./src/utility/Sql_Querries.mjs";
+import { writeQueries } from "./src/db/writeQueries.mjs";
 
 configDotenv();
 const app = express();
@@ -143,26 +144,24 @@ if (cluster.isPrimary) {
       msg: `Server Running on Port==>${PORT}`,
     });
   });
-
   app.get("/mapping", async (req, res) => {
     try {
-      const path = "./designation_mapping.xlsx";
-      const workbook = xlsx.readFile(path);
-      const sheetName = workbook.SheetNames[0];
+      const rows = await readXlsxFile("./certification_mapping.xlsx");
+      const header = rows[0];
+      const data = rows.slice(1).map((row) => {
+        return row.reduce((obj, value, index) => {
+          obj[header[index]] = value;
+          return obj;
+        }, {});
+      });
 
-      // Get the first sheet
-      const sheet = workbook.Sheets[sheetName];
-
-      const data = xlsx.utils.sheet_to_json(sheet);
-
-      const arr = await Promise.all(
+      const desigObj = await Promise.all(
         data.map(async (entry) => {
-          // console.log(entry);
-          const designationID = await executeReadQuery(
-            `SELECT id FROM designation_master WHERE designation_name_marathi='${entry.Designation}'`
+          const desigDetails = await executeReadQuery(
+            `select id from designation_master where designation_name_marathi='${entry.Designation}'`
           );
-
-          const UpArr = {
+          return {
+            designation_id: desigDetails[0].id,
             police_verification: entry.police_verification,
             medical_certificate: entry.medical_certificate,
             mscit_certificate: entry.mscit_certificate,
@@ -174,26 +173,61 @@ if (cluster.isPrimary) {
             permanent_certificate: entry.permanent_certificate,
             PRT_exam_ceritficate: entry.PRT_exam_ceritficate,
             Sup_Exam_certificate: entry.Sup_Exam_certificate,
+            language_exemption: 0,
           };
-          const upDate = await update_table(
-            "designation_and_required_certificate",
-            "id",
-            designationID[0].id,
-
-            Object.keys(UpArr),
-            Object.values(UpArr)
-          );
-          console.log(upDate);
-          return upDate.affetctedRow;
         })
       );
-
-      res.send(arr);
+      desigObj.forEach(async (obj) => {
+        const resp = await executeWriteQuery(
+          writeQueries.insertTable("designation_and_required_certificate"),
+          obj
+        );
+        console.log(resp);
+      });
     } catch (error) {
-      console.error("Error processing mapping:", error);
-      res.status(500).send("Internal Server Error");
+      console.error(error);
+      res.status(500).json({ error: "An error occurred" });
     }
   });
+
+  // app.get("/mapping", async (req, res) => {
+  //   const rows = await readXlsxFile("./certification_mapping.xlsx");
+  //   const header = rows[0];
+  //   const data = rows.slice(1).map((row) => {
+  //     return row.reduce((obj, value, index) => {
+  //       obj[header[index]] = value;
+  //       return obj;
+  //     }, {});
+  //   });
+
+  //   let desigObj = [];
+  //   const reslove = Promise.all(
+  //     data.map(async (entry, i) => {
+  //       const desigDetails = executeReadQuery(
+  //         `select id from designation_master where designation_name_marathi='${entry.Designation}'`
+  //       ).then((res) => {
+  //         const UpArr = {
+  //           designation_id: res[0].id,
+  //           police_verification: entry.police_verification,
+  //           medical_certificate: entry.medical_certificate,
+  //           mscit_certificate: entry.mscit_certificate,
+  //           marathi_exemption_order: entry.marathi_exemption_order,
+  //           hindi_exemption_order: entry.hindi_exemption_order,
+  //           steno_speed_certificate: entry.english_typing_certificate,
+  //           marathi_typing_certificate: entry.marathi_typing_certificate,
+  //           english_typing_certificate: entry.english_typing_certificate,
+  //           permanent_certificate: entry.permanent_certificate,
+  //           PRT_exam_ceritficate: entry.PRT_exam_ceritficate,
+  //           Sup_Exam_certificate: entry.Sup_Exam_certificate,
+  //           language_exemption: 0,
+  //         };
+  //         desigObj.push(UpArr);
+  //       });
+  //     })
+  //   );
+
+  //   console.log(count(desigObj));
+  // });
 
   app.listen(PORT, () => {
     console.log(`server started on ${PORT} ${process.pid}`);

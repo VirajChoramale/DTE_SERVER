@@ -28,8 +28,8 @@
     "pm2": "^5.4.0",
     "prom-client": "^11.5.3",
     "qs": "^6.12.1",
-    "response-time": "^2.3.2",
-    "xlsx": "^0.18.5"
+    "read-excel-file": "^5.8.4",
+    "response-time": "^2.3.2"
   },
   "type": "module"
 }
