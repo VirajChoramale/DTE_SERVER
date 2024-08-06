@@ -5,17 +5,18 @@ import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
 import { select_from_table } from "../utility/Sql_Querries.mjs";
 //----> singleAPI
-export const getDesignations = async(req,res) => {
+export const getDesignations = async (req, res) => {
   const response = {};
   try {
-    response.designations = await executeWriteQuery(readQueries.getDesignations());
-
+    response.designations = await executeWriteQuery(
+      readQueries.getDesignations()
+    );
   } catch (error) {
-    res.send(422)
-    response.err="SQL ERR"+error
+    res.send(422);
+    response.err = "SQL ERR" + error;
   }
   res.send(response);
-}
+};
 
 //<------
 export const personalDetailsData = async (req, res) => {
@@ -238,7 +239,7 @@ export const getEmployeeFormStatus = async (req, res) => {
     "employee_certificate_details",
     "employee_probation_details",
     "employee_retirement_details",
-    `10_20_Scheme`,
+    `timebound_10_20_promotion`,
   ];
   const response = {};
   const id = await executeReadQuery(
@@ -267,6 +268,6 @@ export const getEmployeeFormStatus = async (req, res) => {
   } catch (error) {
     response.err = "SQL error: " + error;
   }
-  
+
   return res.send(response);
 };
