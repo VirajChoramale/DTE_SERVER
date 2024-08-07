@@ -2,7 +2,7 @@ import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
 import { writeQueries } from "../db/writeQueries.mjs";
 import { deleteFromnTable, update_table } from "../utility/Sql_Querries.mjs";
-
+import { bcrypt_text } from "../utility/bcrypt_js.mjs";
 //This controller for common operation which are common in different roles
 
 /* create prof -->*/
@@ -638,4 +638,18 @@ export const createSpacialPromotion = async (req, res) => {
   }
 
   return res.send(response);
+};
+
+export const submitEmployeeForms = async (req, res) => {
+  const employeeID = req.body.employeeID;
+  const userStatus = await executeReadQuery(
+    "select emp.sevarth_no, emp.is_account_created,emp.is_locked FROM employee  as emp where emp.id= ?",
+    employeeID
+  );
+  //account creation logic
+  // if(userStatus[0].is_account_created===0){
+  //   SELECT emp.sevarth_no,emp.contact_no,emp.email,emp.is_account_created,
+  //   emp.is_locked
+  //   FROM employee as emp where emp.id=504;
+  // }
 };
