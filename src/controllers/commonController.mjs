@@ -196,7 +196,7 @@ export const createEmployee = async (req, res) => {
         cas_designation: experianceData.cas_designation,
         deputation_order_date: experianceData.deputation_order_date,
         deputation_order_number: experianceData.deputation_order_number,
-
+        deputation_start_date: experianceData.deputation_start_date,
         designation: post[0].desigation_id,
         department: post[0].course_group,
         date_of_joining: experianceData.date_of_joining,
