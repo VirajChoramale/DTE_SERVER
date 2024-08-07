@@ -117,12 +117,17 @@ if (cluster.isPrimary) {
   app.use(
     "/Common",
     verifyToken,
-    Auth_req(["INSTITUTE", "RO", "MSBTE"]),
+    Auth_req(["INSTITUTE", "RO", "MSBTE", "DESK"]),
     Common,
     () => {}
   );
   //DataStreamPipeline
-  app.use("/DataPipeline", verifyToken, DataStream);
+  app.use(
+    "/DataPipeline",
+
+    verifyToken,
+    DataStream
+  );
 
   app.use("/Desk", Desk, () => {});
 
