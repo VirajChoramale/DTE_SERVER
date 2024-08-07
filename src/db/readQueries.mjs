@@ -9,7 +9,7 @@ readQueries.getEmployee = () => {
   return "select * from employee where id = ?";
 };
 readQueries.getInstEmployee = () => {
-  return `select case when dm.class='A' THEN 1 WHEN dm.class='C' OR dm.class='D' THEN 2 end  as tech_type ,emp.employee_type,emp.sevarth_no,emp.id,emp.designation_id,emp.title,emp.full_name,dm.designation_name,
+  return `select case when dm.class='A' THEN 1 WHEN dm.class='C' OR dm.class='D' THEN 2 end  as tech_type ,emp.employee_type,emp.sevarth_no,emp.id,emp.designation_id,emp.title,emp.full_name,emp.dob,dm.designation_name,
 case when emp.course_id=0 OR emp.course_id=NULL then "-" END as coursename,crs.coursename,cg.course_group_name_eng as course_group from employee as emp
 left join designation_master as dm on emp.designation_id=dm.id 
 left join course_group as cg on emp.course_group=cg.id
