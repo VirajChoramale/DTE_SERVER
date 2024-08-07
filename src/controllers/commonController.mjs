@@ -216,6 +216,8 @@ export const createEmployee = async (req, res) => {
       {
         mode_of_selection: experianceData.mode_of_selection,
         letter_number: experianceData.appointment_letter_number,
+        letter_date: experianceData.order_date,
+        appointment_category: experianceData.appointment_category,
         appoint_designation: experianceData.appoint_designation,
         appoint_course: experianceData.appoint_course,
         appoint_crs_lvl: experianceData.appoint_crs_lvl,
