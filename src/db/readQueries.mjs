@@ -195,11 +195,11 @@ readQueries.getCertificatesByDesig = () => {
 CASE WHEN hindi_exemption_order = 1 THEN 'hindi_exemption_order,' ELSE '' END,
      CASE WHEN steno_speed_certificate = 1 THEN 'steno_speed_certificate,' ELSE '' END,
       CASE WHEN marathi_typing_certificate = 1 THEN 'marathi_typing_certificate,' ELSE '' END, 
-CASE WHEN PRT_exam_ceritficate = 1 THEN 'PRT_exam_ceritficate,' ELSE '' END,
+CASE WHEN PRT_exam = 1 THEN 'PRT_exam,' ELSE '' END,
       CASE WHEN english_typing_certificate = 1 THEN 'english_typing_certificate,' ELSE '' END,
        CASE WHEN permanent_certificate = 1 THEN 'permanent_certificate,' ELSE '' END,
         CASE WHEN police_verification = 1 THEN 'police_verification,' ELSE '' END, 
-        CASE WHEN Sup_Exam_certificate = 1 THEN 'Sup_Exam_certificate,' ELSE '' END )
+        CASE WHEN SRT_Exam = 1 THEN 'SRT_Exam,' ELSE '' END )
          AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? GROUP BY designation_id`;
 };
 readQueries.getEmployeeSpacialPromotion = () => {
