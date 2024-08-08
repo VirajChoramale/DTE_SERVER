@@ -3,6 +3,8 @@ import { readQueries } from "../db/readQueries.mjs";
 import { writeQueries } from "../db/writeQueries.mjs";
 import { deleteFromnTable, update_table } from "../utility/Sql_Querries.mjs";
 import { bcrypt_text } from "../utility/bcrypt_js.mjs";
+import { SendGmail } from "../utility/sendGmail.mjs";
+
 //This controller for common operation which are common in different roles
 
 /* create prof -->*/
@@ -75,9 +77,30 @@ export const getInstituteVaccancy = async (req, res) => {
     readQueries.getInstVaccancy(),
     inst_id
   );
+  const isPostConfirm = await executeReadQuery(
+    readQueries.isPostConfirm(),
+    inst_id
+  );
   return res.send({
     vaccancy_data: vaccancy_data,
+    isPostConfirm: isPostConfirm,
   });
+};
+export const confirmPost = async (req, res) => {
+  const instId = req.user.inst_id;
+  try {
+    const data = {
+      inst_id: instId,
+      confirm: 1,
+    };
+    const insert = await executeWriteQuery(
+      writeQueries.insertTable("is_post_confirm"),
+      data
+    );
+    return res.status(200).send({ insert });
+  } catch (error) {
+    return res.status(402).send({ msg: "Something went wrong" });
+  }
 };
 
 export const getEmployeeList = async (req, res) => {
@@ -645,14 +668,74 @@ export const createSpacialPromotion = async (req, res) => {
 
 export const submitEmployeeForms = async (req, res) => {
   const employeeID = req.body.employeeID;
+  console.log(employeeID)
   const userStatus = await executeReadQuery(
-    "select emp.sevarth_no, emp.is_account_created,emp.is_locked FROM employee  as emp where emp.id= ?",
+    "select emp.id,emp.contact_no,emp.email,emp.sevarth_no, emp.full_name,emp.is_account_created,emp.is_locked FROM employee  as emp where emp.id= ?",
     employeeID
   );
-  //account creation logic
-  // if(userStatus[0].is_account_created===0){
-  //   SELECT emp.sevarth_no,emp.contact_no,emp.email,emp.is_account_created,
-  //   emp.is_locked
-  //   FROM employee as emp where emp.id=504;
-  // }
+  try {
+    //account creation logic
+
+    if (userStatus[0].is_account_created === 0) {
+
+      const passwd = bcrypt_text(userStatus[0].sevarth_no);
+      const user = {
+        username: userStatus[0].sevarth_no,
+        inst_id: userStatus[0].id,
+        name: userStatus[0].full_name,
+        mobile: userStatus[0].contact_no,
+        email: userStatus[0].email,
+        password: passwd,
+        role: "EMP",
+        status: 1,
+      };
+
+      const insertUser = await executeWriteQuery(
+        writeQueries.insertTable("users_new"),
+        user
+      );
+      if (insertUser.affectedRows) {
+        const emailResponse = SendGmail(1, userStatus[0].email, [
+          userStatus[0].full_name,
+          userStatus[0].sevarth_no,
+          userStatus[0].sevarth_no,
+        ]);
+        let date = new Date().toJSON();
+        date=date.slice(0,10);
+        const updateEmp = {
+          is_account_created: 1,
+          is_data_locked: 1,
+          is_locked:1,
+          account_creation_date:date
+        };
+        const updateEmployee = await update_table(
+          "employee",
+          "id",
+          employeeID,
+          Object.keys(updateEmp),
+          Object.values(updateEmp)
+        );
+        console.log(updateEmployee);
+
+      }
+      res.send("Employee created Successfull");
+    }
+    else{
+      const updateEmp = {
+        is_data_locked: 1,
+        is_locked:1,
+      };
+      const updateEmployee = await update_table(
+        "employee",
+        "id",
+        2427,
+        Object.keys(updateEmp),
+        Object.values(updateEmp)
+      );
+      res.send("Employee Data Successfully Updated");
+
+    }
+  } catch (error) {
+    res.status(402).send(error);
+  }
 };

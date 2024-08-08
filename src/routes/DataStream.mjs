@@ -14,9 +14,12 @@ import {
   getEmployeeSpacialPromotion,
   getEmployeeFormStatus,
   getEmployeeCertificates,
-  getDesignations
+  getDesignations,
+  getInstPostConfirm
 } from "../controllers/DataStreamPipeline.mjs";
 router.post("/personalDetailsData", personalDetailsData, (req, res) => {});
+router.post("/getInstPostConfirm", getInstPostConfirm, (req, res) => {});
+
 router.post(
   "/fetchEducationFormData",
   fetchEducationFormData,

@@ -14,7 +14,8 @@ import {
   insertEmployee,
   getPostCountEmp,
   createSpacialPromotion,
-  createEmployeeCertificates
+  createEmployeeCertificates,confirmPost,
+  submitEmployeeForms
 } from "../controllers/commonController.mjs";
 
 router.post("/create_profile_data", getDataCreateProfile, (req, res) => {});
@@ -23,6 +24,7 @@ router.post("/get_vaccancy", getInstituteVaccancy, (req, res) => {});
 router.post("/getEmployeeList", getEmployeeList, (req, res) => {});
 router.post("/insertEmployee", insertEmployee, (req, res) => {});
 router.post("/getPostCountEmp/:id", getPostCountEmp, (req, res) => {});
+router.post("/confirmPost", confirmPost, (req, res) => {});
 
 /* */
 router.post("/createEmployee", createEmployee, (req, res) => {});
@@ -37,6 +39,8 @@ router.post("/createExperiance", createExperianceDetails, (req, res) => {});
 router.post("/createOtherDetails", createOtherDetails, (req, res) => { });
 router.post("/createSpacialPromotion", createSpacialPromotion, (req, res) => { });
 router.post("/createEmployeeCertificates", createEmployeeCertificates, (req, res) => {});
+router.post("/submitEmployeeForms", submitEmployeeForms, (req, res) => {});
+
 
 
 

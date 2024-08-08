@@ -22,7 +22,7 @@ import { writeQueries } from "./src/db/writeQueries.mjs";
 configDotenv();
 const app = express();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT||8080;
 const KeyGen = async () => {
   const key = "oYkI2v4ObFxrP/9GGtxdsxnqtyk9ZITxbhX4WFecQoI=";
 
@@ -80,7 +80,7 @@ if (cluster.isPrimary) {
   );
   app.use(
     cors({
-      origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+      origin:true, //["http://localhost:5173", "http://127.0.0.1:5173"],
       credentials: true, // Allow cookies for cross-origin requests (if applicable)
       methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
       allowedHeaders: [

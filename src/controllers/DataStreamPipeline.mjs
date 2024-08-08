@@ -17,6 +17,16 @@ export const getDesignations = async (req, res) => {
   }
   res.send(response);
 };
+export const getInstPostConfirm=async(req,res)=>{
+  const instId=req.user.inst_id;
+  try {
+    const isPostConfirm=await executeReadQuery(readQueries.isPostConfirm(),instId);
+    return res.send(isPostConfirm);
+
+  } catch (error) {
+    return res.status(402).send("ERR")
+  }
+}
 
 //<------
 export const personalDetailsData = async (req, res) => {
@@ -268,6 +278,7 @@ export const getEmployeeFormStatus = async (req, res) => {
         response["form" + [i]] = 0;
       }
     }
+    response.is_data_locked=await executeReadQuery("SELECT is_data_locked FROM employee where id=?",employeeId)
   } catch (error) {
     response.err = "SQL error: " + error;
   }

@@ -4,7 +4,7 @@ import { readQueries } from "../db/readQueries.mjs"
 import { sendMail } from "./Gmail.mjs";
 
 export const SendGmail = async (template_id, to_email,variables) => {
-    
+    //console.log(variables);
     const template = await executeReadQuery(readQueries.getEmailTemplate(), template_id);
     let content = template[0].content;
     for (let i = 0; i < variables.length; i++){

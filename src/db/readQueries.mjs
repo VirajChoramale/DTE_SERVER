@@ -100,8 +100,11 @@ readQueries.getInstVaccancy = () => {
                   left join courses as crs on ivd.course_id=crs.id
                   left join course_group as cg on ivd.course_group=cg.id
                   left JOIN designation_master as dm on ivd.desigation_id=dm.id
-                  where inst_id=? order by dm.priority;`;
+                  where inst_id=? order by dm.class asc ,dm.priority asc;`;
 };
+readQueries.isPostConfirm=()=>{
+  return"select * from is_post_confirm where inst_id=?"
+}
 readQueries.getPostDetails = () => {
   //get post details
   return `SELECT ivd.id,ivd.course_id,ivd.course_level_id,ivd.course_group,ivd.desigation_id,desig.designation_name,crs.coursename,crs.course_marathi_name,cg.course_group_name_eng,cg.course_grp_marathi
