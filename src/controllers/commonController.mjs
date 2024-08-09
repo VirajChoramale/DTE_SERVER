@@ -4,7 +4,14 @@ import { writeQueries } from "../db/writeQueries.mjs";
 import { deleteFromnTable, update_table } from "../utility/Sql_Querries.mjs";
 import { bcrypt_text } from "../utility/bcrypt_js.mjs";
 import { SendGmail } from "../utility/sendGmail.mjs";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from 'url';
 
+import fs from 'fs'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 //This controller for common operation which are common in different roles
 
 /* create prof -->*/
@@ -737,5 +744,67 @@ export const submitEmployeeForms = async (req, res) => {
     }
   } catch (error) {
     res.status(402).send(error);
+  }
+};
+
+
+const createMulterInstance = (folder,filename) => {
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadPath = path.join(__dirname, 'storage', 'upload', folder);
+
+      // Asynchronously check for directory existence and create it if needed
+      fs.access(uploadPath, fs.constants.F_OK, (err) => {
+        if (err) {
+          fs.mkdirSync(uploadPath, { recursive: true }); // Create directory recursively
+        }
+        cb(null, uploadPath);
+      });
+    },
+    filename: (req, file, cb) => {
+      //const uniqueSuffix = Date.now() + path.extname(file.originalname);
+      cb(null, filename+path.extname(file.originalname));
+    },
+  });
+
+  return multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limit files to 5MB
+    fileFilter: (req, file, cb) => {
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.xls', '.xlsx', '.pdf'];
+      const extname = path.extname(file.originalname).toLowerCase();
+
+      if (allowedExtensions.includes(extname)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only .jpg, .jpeg, .png, .xls, .xlsx, .pdf files are allowed!'));
+      }
+    },
+  });
+};
+
+ export const RaiseQuery = async (req, res) => {
+
+  try {
+    const upload = createMulterInstance('raise_query_docs',"viraj");
+
+    // Use `upload.single()` for single file upload
+    upload.single('file')(req, res, (err) => {
+      if (err) {
+        return res.status(400).send({
+          message: 'Error uploading file',
+          error: err.message,
+        });
+      }
+
+      res.send({
+        message: 'File uploaded successfully!',
+        file: req.file,
+        folder: 'raise_query_docs',
+      });
+    });
+  } catch (error) {
+    console.error('Error in RaiseQuery:', error);
+    res.status(500).send({ message: 'Internal server error' });
   }
 };

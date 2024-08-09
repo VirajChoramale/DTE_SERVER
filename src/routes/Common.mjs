@@ -15,7 +15,7 @@ import {
   getPostCountEmp,
   createSpacialPromotion,
   createEmployeeCertificates,confirmPost,
-  submitEmployeeForms
+  submitEmployeeForms,RaiseQuery
 } from "../controllers/commonController.mjs";
 
 router.post("/create_profile_data", getDataCreateProfile, (req, res) => {});
@@ -41,6 +41,7 @@ router.post("/createSpacialPromotion", createSpacialPromotion, (req, res) => { }
 router.post("/createEmployeeCertificates", createEmployeeCertificates, (req, res) => {});
 router.post("/submitEmployeeForms", submitEmployeeForms, (req, res) => {});
 
+router.post("/RaiseQuery", RaiseQuery, (req, res) => {});
 
 
 

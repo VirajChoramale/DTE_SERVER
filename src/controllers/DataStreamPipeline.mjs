@@ -24,7 +24,7 @@ export const getInstPostConfirm=async(req,res)=>{
     return res.send(isPostConfirm);
 
   } catch (error) {
-    return res.status(402).send("ERR")
+    return res.status(422).send("ERR")
   }
 }
 
@@ -46,7 +46,7 @@ export const personalDetailsData = async (req, res) => {
   } catch (error) {
     response.error = {
       msg: "SQL error" + error,
-      code: 402,
+      code: 422,
     };
     return res.status(302).send(response);
   }
@@ -285,3 +285,14 @@ export const getEmployeeFormStatus = async (req, res) => {
 
   return res.send(response);
 };
+export const getQueriesList=async(req,res)=>{
+  const response={};
+  try {
+   const queryList=await executeReadQuery("select * from raise_query_list");
+   res.send(queryList)
+  } catch (error) {
+    response.err=error;
+    res.status(422).send(error)
+  }
+ 
+}
