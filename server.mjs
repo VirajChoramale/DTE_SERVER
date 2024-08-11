@@ -18,16 +18,13 @@ import { count, time } from "node:console";
 import { executeReadQuery, executeWriteQuery } from "./src/db/db_operation.mjs";
 import { deleteFromnTable, update_table } from "./src/utility/Sql_Querries.mjs";
 import { writeQueries } from "./src/db/writeQueries.mjs";
+import { genCryptoRandom } from "./src/utility/GenRandomKey.mjs";
 
 configDotenv();
 const app = express();
 
 const PORT = process.env.PORT||8080;
-const KeyGen = async () => {
-  const key = "oYkI2v4ObFxrP/9GGtxdsxnqtyk9ZITxbhX4WFecQoI=";
 
-  return key;
-};
 let activeWorkers = new Map();
 
 if (cluster.isPrimary) {
@@ -102,7 +99,7 @@ if (cluster.isPrimary) {
   });
   app.post("/getKeyRedux", async (req, res) => {
     //sending key for redux
-    res.json({ key: await KeyGen() });
+    res.json({ key: key });
   });
   app.use("/auth", User, () => {});
   //Institute Route

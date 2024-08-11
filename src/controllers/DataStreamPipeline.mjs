@@ -294,5 +294,18 @@ export const getQueriesList=async(req,res)=>{
     response.err=error;
     res.status(422).send(error)
   }
- 
 }
+export const getUserQueries=async(req,res )=>{
+    const response={}
+    try {
+      response.queries=await executeWriteQuery(
+        `select user_queries.description,user_queries.file_name,rql.query_in as issue_in,case WHEN user_queries.status=0 THEN "Pending" WHEN user_queries.status=1 THEN "Resolved" WHEN user_queries.status=2 THEN "Discarded" END AS "status" from user_queries left join raise_query_list as rql on user_queries.issue_in=rql.id
+        where raised_by= ?`
+      ,req.user.inst_id);
+    
+    } catch (error) {
+      res.status(422)
+      response.err=error  
+    }
+    res.send(response)
+ }

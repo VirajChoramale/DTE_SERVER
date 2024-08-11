@@ -4,16 +4,24 @@ import { writeQueries } from "../db/writeQueries.mjs";
 import { deleteFromnTable, update_table } from "../utility/Sql_Querries.mjs";
 import { bcrypt_text } from "../utility/bcrypt_js.mjs";
 import { SendGmail } from "../utility/sendGmail.mjs";
-import multer from "multer";
+import { createMulterInstance } from "../../MulterHelper.mjs";
+import { genRandomString } from "../utility/GenRandomKey.mjs";
 import path from "path";
-import { fileURLToPath } from 'url';
 
-import fs from 'fs'
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 //This controller for common operation which are common in different roles
-
+function getFormattedDate() {
+  const date = new Date();
+  
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 /* create prof -->*/
 export const getDataCreateProfile = async (req, res) => {
   const inst_id = req.user.inst_id;
@@ -675,7 +683,7 @@ export const createSpacialPromotion = async (req, res) => {
 
 export const submitEmployeeForms = async (req, res) => {
   const employeeID = req.body.employeeID;
-  console.log(employeeID)
+  console.log(employeeID);
   const userStatus = await executeReadQuery(
     "select emp.id,emp.contact_no,emp.email,emp.sevarth_no, emp.full_name,emp.is_account_created,emp.is_locked FROM employee  as emp where emp.id= ?",
     employeeID
@@ -684,7 +692,6 @@ export const submitEmployeeForms = async (req, res) => {
     //account creation logic
 
     if (userStatus[0].is_account_created === 0) {
-
       const passwd = bcrypt_text(userStatus[0].sevarth_no);
       const user = {
         username: userStatus[0].sevarth_no,
@@ -708,12 +715,12 @@ export const submitEmployeeForms = async (req, res) => {
           userStatus[0].sevarth_no,
         ]);
         let date = new Date().toJSON();
-        date=date.slice(0,10);
+        date = date.slice(0, 10);
         const updateEmp = {
           is_account_created: 1,
           is_data_locked: 1,
-          is_locked:1,
-          account_creation_date:date
+          is_locked: 1,
+          account_creation_date: date,
         };
         const updateEmployee = await update_table(
           "employee",
@@ -723,14 +730,12 @@ export const submitEmployeeForms = async (req, res) => {
           Object.values(updateEmp)
         );
         console.log(updateEmployee);
-
       }
       res.send("Employee created Successfull");
-    }
-    else{
+    } else {
       const updateEmp = {
         is_data_locked: 1,
-        is_locked:1,
+        is_locked: 1,
       };
       const updateEmployee = await update_table(
         "employee",
@@ -740,71 +745,46 @@ export const submitEmployeeForms = async (req, res) => {
         Object.values(updateEmp)
       );
       res.send("Employee Data Successfully Updated");
-
     }
   } catch (error) {
     res.status(402).send(error);
   }
 };
 
+export const RaiseQuery = async (req, res) => {
+  const filename = req.user.inst_id + "_" + Date.now()
+  const upload = createMulterInstance("raise_query_docs", filename);
+  const response={}
+  const up=upload.single("file")(req, res, async () => {
+    const query = {};
+  
+    query.issue_in = req.body.data.issueIn;
+    query.description = req.body.data.description;
+    query.raised_by=req.user.inst_id;
+    query.ref_no=genRandomString(10);
+    query.currently_in=1;
+    query.status=0;
+    query.created_at=getFormattedDate();
+    if (req.file) {
+      query.file_name = filename+path.extname(req.file.originalname).toLowerCase();
+    }
+    try {
+      const res = await executeWriteQuery(
+        writeQueries.insertTable("user_queries"),
+        query
 
-const createMulterInstance = (folder,filename) => {
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      const uploadPath = path.join(__dirname, 'storage', 'upload', folder);
-
-      // Asynchronously check for directory existence and create it if needed
-      fs.access(uploadPath, fs.constants.F_OK, (err) => {
-        if (err) {
-          fs.mkdirSync(uploadPath, { recursive: true }); // Create directory recursively
-        }
-        cb(null, uploadPath);
-      });
-    },
-    filename: (req, file, cb) => {
-      //const uniqueSuffix = Date.now() + path.extname(file.originalname);
-      cb(null, filename+path.extname(file.originalname));
-    },
-  });
-
-  return multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // Limit files to 5MB
-    fileFilter: (req, file, cb) => {
-      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.xls', '.xlsx', '.pdf'];
-      const extname = path.extname(file.originalname).toLowerCase();
-
-      if (allowedExtensions.includes(extname)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Only .jpg, .jpeg, .png, .xls, .xlsx, .pdf files are allowed!'));
+      );
+      response.success={
+        msg:`Query Raised to IT_CELL..REFERENCE NO:- ${query.ref_no}`,
+        refID:query.ref_no
       }
-    },
-  });
-};
-
- export const RaiseQuery = async (req, res) => {
-
-  try {
-    const upload = createMulterInstance('raise_query_docs',"viraj");
-
-    // Use `upload.single()` for single file upload
-    upload.single('file')(req, res, (err) => {
-      if (err) {
-        return res.status(400).send({
-          message: 'Error uploading file',
-          error: err.message,
-        });
+    } catch (error) {
+      response.error={
+         err:error
       }
+    }
+    console.log(response)
+    response.success?res.send(response):res.status(500).send(response);
 
-      res.send({
-        message: 'File uploaded successfully!',
-        file: req.file,
-        folder: 'raise_query_docs',
-      });
-    });
-  } catch (error) {
-    console.error('Error in RaiseQuery:', error);
-    res.status(500).send({ message: 'Internal server error' });
-  }
+  });
 };
