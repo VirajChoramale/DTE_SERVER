@@ -19,11 +19,16 @@ import { executeReadQuery, executeWriteQuery } from "./src/db/db_operation.mjs";
 import { deleteFromnTable, update_table } from "./src/utility/Sql_Querries.mjs";
 import { writeQueries } from "./src/db/writeQueries.mjs";
 import { genCryptoRandom } from "./src/utility/GenRandomKey.mjs";
+import { dirname } from "path";
+import path from "path";
+
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 configDotenv();
 const app = express();
 
-const PORT = process.env.PORT||8080;
+const PORT = process.env.PORT || 8080;
 
 let activeWorkers = new Map();
 
@@ -77,7 +82,7 @@ if (cluster.isPrimary) {
   );
   app.use(
     cors({
-      origin:true, //["http://localhost:5173", "http://127.0.0.1:5173"],
+      origin: true, //["http://localhost:5173", "http://127.0.0.1:5173"],
       credentials: true, // Allow cookies for cross-origin requests (if applicable)
       methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
       allowedHeaders: [
@@ -100,6 +105,16 @@ if (cluster.isPrimary) {
   app.post("/getKeyRedux", async (req, res) => {
     //sending key for redux
     res.json({ key: key });
+  });
+  app.get("/getFile", (req, res) => {
+    const filePath = path.join(__dirname, "test.xlsx");
+
+    res.download(filePath, "test.xlsx", (err) => {
+      if (err) {
+        console.error("Error occurred while downloading the file:", err);
+        res.status(500).send("Error occurred while downloading the file.");
+      }
+    });
   });
   app.use("/auth", User, () => {});
   //Institute Route

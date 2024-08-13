@@ -17,7 +17,8 @@ import {
   getDesignations,
   getInstPostConfirm,
   getQueriesList,
-  getUserQueries
+  getUserQueries,
+  downLoadQueryFile,
 } from "../controllers/DataStreamPipeline.mjs";
 router.post("/personalDetailsData", personalDetailsData, (req, res) => {});
 router.post("/getInstPostConfirm", getInstPostConfirm, (req, res) => {});
@@ -32,7 +33,6 @@ router.post(
   fetchMaritalStatusFormData,
   (req, res) => {}
 );
-
 
 router.post(
   "/fetchExperianceFormData",
@@ -53,8 +53,6 @@ router.post("/getEmployeeFormStatus", getEmployeeFormStatus);
 router.post("/getEmployeeCertificates", getEmployeeCertificates);
 router.post("/getQueriesList", getQueriesList, (req, res) => {});
 router.post("/getUserQueries", getUserQueries, (req, res) => {});
-
-
-
+router.post("/downLoadQueryFile", downLoadQueryFile, (req, res) => {});
 
 export default router;

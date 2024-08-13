@@ -4,6 +4,10 @@ import { response } from "express";
 import { executeReadQuery, executeWriteQuery } from "../db/db_operation.mjs";
 import { readQueries } from "../db/readQueries.mjs";
 import { select_from_table } from "../utility/Sql_Querries.mjs";
+import { dirname } from "path";
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 //----> singleAPI
 export const getDesignations = async (req, res) => {
   const response = {};
@@ -17,16 +21,18 @@ export const getDesignations = async (req, res) => {
   }
   res.send(response);
 };
-export const getInstPostConfirm=async(req,res)=>{
-  const instId=req.user.inst_id;
+export const getInstPostConfirm = async (req, res) => {
+  const instId = req.user.inst_id;
   try {
-    const isPostConfirm=await executeReadQuery(readQueries.isPostConfirm(),instId);
+    const isPostConfirm = await executeReadQuery(
+      readQueries.isPostConfirm(),
+      instId
+    );
     return res.send(isPostConfirm);
-
   } catch (error) {
-    return res.status(422).send("ERR")
+    return res.status(422).send("ERR");
   }
-}
+};
 
 //<------
 export const personalDetailsData = async (req, res) => {
@@ -278,34 +284,50 @@ export const getEmployeeFormStatus = async (req, res) => {
         response["form" + [i]] = 0;
       }
     }
-    response.is_data_locked=await executeReadQuery("SELECT is_data_locked FROM employee where id=?",employeeId)
+    response.is_data_locked = await executeReadQuery(
+      "SELECT is_data_locked FROM employee where id=?",
+      employeeId
+    );
   } catch (error) {
     response.err = "SQL error: " + error;
   }
 
   return res.send(response);
 };
-export const getQueriesList=async(req,res)=>{
-  const response={};
+export const getQueriesList = async (req, res) => {
+  const response = {};
   try {
-   const queryList=await executeReadQuery("select * from raise_query_list");
-   res.send(queryList)
+    const queryList = await executeReadQuery("select * from raise_query_list");
+    res.send(queryList);
   } catch (error) {
-    response.err=error;
-    res.status(422).send(error)
+    response.err = error;
+    res.status(422).send(error);
   }
-}
-export const getUserQueries=async(req,res )=>{
-    const response={}
-    try {
-      response.queries=await executeWriteQuery(
-        `select user_queries.ref_no,user_queries.created_at, user_queries.description,user_queries.file_name,rql.query_in as issue_in,case WHEN user_queries.status=0 THEN "Pending" WHEN user_queries.status=1 THEN "Resolved" WHEN user_queries.status=2 THEN "Discarded" END AS "status" from user_queries left join raise_query_list as rql on user_queries.issue_in=rql.id
-        where raised_by= ?`
-      ,req.user.inst_id);
-    
-    } catch (error) {
-      res.status(422)
-      response.err=error  
+};
+export const getUserQueries = async (req, res) => {
+  const response = {};
+  try {
+    response.queries = await executeWriteQuery(
+      `select user_queries.ref_no,user_queries.created_at, user_queries.description,user_queries.file_name,rql.query_in as issue_in,case WHEN user_queries.status=0 THEN "Pending" WHEN user_queries.status=1 THEN "Resolved" WHEN user_queries.status=2 THEN "Discarded" END AS "status" from user_queries left join raise_query_list as rql on user_queries.issue_in=rql.id
+        where raised_by= ?`,
+      req.user.inst_id
+    );
+  } catch (error) {
+    res.status(422);
+    response.err = error;
+  }
+  res.send(response);
+};
+export const downLoadQueryFile = (req, res) => {
+  const filePath = path.join(
+    __dirname,
+    `../../storage/upload/raise_query_docs/${req.body.filename}`
+  );
+
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error("Error occurred while downloading the file:", err);
+      res.status(500).send("Error occurred while downloading the file.");
     }
-    res.send(response)
- }
+  });
+};
