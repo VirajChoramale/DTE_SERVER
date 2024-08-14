@@ -102,9 +102,9 @@ readQueries.getInstVaccancy = () => {
                   left JOIN designation_master as dm on ivd.desigation_id=dm.id
                   where inst_id=? order by dm.class asc ,dm.priority asc;`;
 };
-readQueries.isPostConfirm=()=>{
-  return"select * from is_post_confirm where inst_id=?"
-}
+readQueries.isPostConfirm = () => {
+  return "select * from is_post_confirm where inst_id=?";
+};
 readQueries.getPostDetails = () => {
   //get post details
   return `SELECT ivd.id,ivd.course_id,ivd.course_level_id,ivd.course_group,ivd.desigation_id,desig.designation_name,crs.coursename,crs.course_marathi_name,cg.course_group_name_eng,cg.course_grp_marathi
@@ -188,7 +188,7 @@ readQueries.getDepartMentalEnquiry = () => {
 };
 
 readQueries.getCertificatesByDesig = () => {
-  return `SELECT designation_id, CONCAT( CASE WHEN medical_certificate = 1 THEN 'medical_certificate,' ELSE '' END,
+  return `SELECT designation_id, Group_CONCAT( CASE WHEN medical_certificate = 1 THEN 'medical_certificate,' ELSE '' END,
    CASE WHEN mscit_certificate = 1 THEN 'mscit_certificate,' ELSE '' END,
     CASE WHEN language_exemption = 1 THEN 'language_exemption,' ELSE '' END,
         CASE WHEN marathi_exemption_order = 1 THEN 'marathi_exemption_order,' ELSE '' END,
@@ -200,7 +200,7 @@ CASE WHEN PRT_exam = 1 THEN 'PRT_exam,' ELSE '' END,
        CASE WHEN permanent_certificate = 1 THEN 'permanent_certificate,' ELSE '' END,
         CASE WHEN police_verification = 1 THEN 'police_verification,' ELSE '' END, 
         CASE WHEN SRT_Exam = 1 THEN 'SRT_Exam,' ELSE '' END )
-         AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? GROUP BY designation_id`;
+         AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? `;
 };
 readQueries.getEmployeeSpacialPromotion = () => {
   return `SELECT * FROM timebound_10_20_promotion where employee_id=? `;
