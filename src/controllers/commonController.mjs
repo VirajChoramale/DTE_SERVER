@@ -11,15 +11,15 @@ import path from "path";
 //This controller for common operation which are common in different roles
 function getFormattedDate() {
   const date = new Date();
-  
+
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 /* create prof -->*/
@@ -655,9 +655,14 @@ export const createSpacialPromotion = async (req, res) => {
   const response = {};
   const isEditMode = req.body.isEditMode;
   const employeeId = req.body.employeeId;
+  const RowID = req.body.RowID;
 
   try {
     if (isEditMode == 0) {
+      const deleteRow = await executeWriteQuery(
+        `DELETE FROM timebound_10_20_promotion WHERE employee_id = ${employeeId} AND is_timebound = 0`
+      );
+      response.delReq = deleteRow;
       response.insertPromotion = await executeWriteQuery(
         writeQueries.insertTable("timebound_10_20_promotion"),
         req.body.data.promotion
@@ -665,13 +670,18 @@ export const createSpacialPromotion = async (req, res) => {
     } else if (isEditMode == 1) {
       response.delReq = await deleteFromnTable(
         "timebound_10_20_promotion",
-        "employee_id",
-        employeeId
+        "id",
+        RowID
       );
       response.insertPromotion = await executeWriteQuery(
         writeQueries.insertTable("timebound_10_20_promotion"),
         req.body.data.promotion
       );
+    } else if (isEditMode == 2) {
+      const deleteRow = await executeWriteQuery(
+        `DELETE FROM timebound_10_20_promotion WHERE id = ${RowID}`
+      );
+      response.delReq = deleteRow;
     }
   } catch (error) {
     res.status(422);
@@ -752,39 +762,38 @@ export const submitEmployeeForms = async (req, res) => {
 };
 
 export const RaiseQuery = async (req, res) => {
-  const filename = req.user.inst_id + "_" + Date.now()
+  const filename = req.user.inst_id + "_" + Date.now();
   const upload = createMulterInstance("raise_query_docs", filename);
-  const response={}
-  const up=upload.single("file")(req, res, async () => {
+  const response = {};
+  const up = upload.single("file")(req, res, async () => {
     const query = {};
-  
+
     query.issue_in = req.body.data.issueIn;
     query.description = req.body.data.description;
-    query.raised_by=req.user.inst_id;
-    query.ref_no=genRandomString(10);
-    query.currently_in=1;
-    query.status=0;
-    query.created_at=getFormattedDate();
+    query.raised_by = req.user.inst_id;
+    query.ref_no = genRandomString(10);
+    query.currently_in = 1;
+    query.status = 0;
+    query.created_at = getFormattedDate();
     if (req.file) {
-      query.file_name = filename+path.extname(req.file.originalname).toLowerCase();
+      query.file_name =
+        filename + path.extname(req.file.originalname).toLowerCase();
     }
     try {
       const res = await executeWriteQuery(
         writeQueries.insertTable("user_queries"),
         query
-
       );
-      response.success={
-        msg:`Query Raised to IT_CELL..REFERENCE NO:- ${query.ref_no}`,
-        refID:query.ref_no
-      }
+      response.success = {
+        msg: `Query Raised to IT_CELL..REFERENCE NO:- ${query.ref_no}`,
+        refID: query.ref_no,
+      };
     } catch (error) {
-      response.error={
-         err:error
-      }
+      response.error = {
+        err: error,
+      };
     }
-    console.log(response)
-    response.success?res.send(response):res.status(500).send(response);
-
+    console.log(response);
+    response.success ? res.send(response) : res.status(500).send(response);
   });
 };

@@ -203,7 +203,10 @@ CASE WHEN PRT_exam = 1 THEN 'PRT_exam,' ELSE '' END,
          AS required_certificates FROM designation_and_required_certificate WHERE designation_id = ? `;
 };
 readQueries.getEmployeeSpacialPromotion = () => {
-  return `SELECT * FROM timebound_10_20_promotion where employee_id=? `;
+  return `SELECT timebound_10_20_promotion.*,designation_master.designation_name
+FROM timebound_10_20_promotion
+LEFT JOIN  designation_master
+ON timebound_10_20_promotion.timebound_designation=designation_master.id where timebound_10_20_promotion.employee_id = ? `;
 };
 //----> employee_queries(for emp login)
 
