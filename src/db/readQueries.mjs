@@ -213,4 +213,13 @@ ON timebound_10_20_promotion.timebound_designation=designation_master.id where t
 readQueries.getEmployeeProfile = () => {
   return;
 };
+
+readQueries.getEmployeeData = () => {
+  return `SELECT sevarth_no,full_name,email,is_profile_confirmed,office_name,course_group_name_eng,principle_remark,ro_remark FROM employee as emp
+  left join office_master as om ON emp.inst_id = om.id
+  left join course_group as cg ON emp.course_group = cg.id
+  left join transferdata as td ON emp.id = td.emp_id
+  where sevarth_no like  ? or full_name like ?`;
+};
+
 export { readQueries };
