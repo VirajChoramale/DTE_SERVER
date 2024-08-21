@@ -137,6 +137,16 @@ export const getPostCountEmp = async (req, res) => {
   });
 };
 
+export const getEmployeeDetails = async (req, res) => {
+  const { search } = req.query;
+  const employees = await executeReadQuery(
+    `SELECT sevarth_no,full_name,is_profile_confirmed FROM dte_prod.employee where sevarth_no like "%${search}%" or full_name like "%${search}%";`
+  );
+  return res.send({
+    employees: employees,
+  });
+};
+
 /* create prof <---*/
 
 /*---->create Employee form(1) create and update in one*/
