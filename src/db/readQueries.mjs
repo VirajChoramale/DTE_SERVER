@@ -214,12 +214,30 @@ readQueries.getEmployeeProfile = () => {
   return;
 };
 
-readQueries.getEmployeeData = () => {
-  return `SELECT sevarth_no,full_name,email,is_profile_confirmed,office_name,course_group_name_eng,principle_remark,ro_remark FROM employee as emp
-  left join office_master as om ON emp.inst_id = om.id
-  left join course_group as cg ON emp.course_group = cg.id
-  left join transferdata as td ON emp.id = td.emp_id
-  where sevarth_no like  ? or full_name like ?`;
+readQueries.getEmployeesData = () => {
+  return `SELECT id,sevarth_no,full_name,email FROM employee
+  where sevarth_no like ? or full_name like ?`;
 };
+
+readQueries.getEmployeeBasicDetails = () => {
+  return `SELECT id,sevarth_no,full_name,email,is_profile_confirmed,is_data_locked,transfer_lock,inst_id,course_group FROM employee
+  where id like ?`;
+};
+
+readQueries.getEmployeeInstitute = () => {
+  return `select office_name FROM office_master where id=?`;
+};
+
+readQueries.getEmployeeCourseGroup = () => {
+  return `select course_group_name_eng FROM course_group where id=?`;
+};
+
+readQueries.getEmployeeRemarks = () => {
+  return `select principal_remark,ro_remark FROM employee_transfer_remarks where employee_id=?`;
+}
+
+readQueries.appliedForTransfer = () => {
+  return `select emp_id FROM transferdata where emp_id=?`;
+}
 
 export { readQueries };

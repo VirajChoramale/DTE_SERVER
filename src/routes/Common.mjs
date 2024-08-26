@@ -18,7 +18,9 @@ import {
   confirmPost,
   submitEmployeeForms,
   RaiseQuery,
-  getEmployeeDetails,
+  getEmployees,
+  getEmployeeData,
+  updateLockUnlock,
 } from "../controllers/commonController.mjs";
 
 router.post("/create_profile_data", getDataCreateProfile, (req, res) => {});
@@ -54,6 +56,10 @@ router.post("/submitEmployeeForms", submitEmployeeForms, (req, res) => {});
 
 router.post("/RaiseQuery", RaiseQuery, (req, res) => {});
 
-router.get("/getemployeeStatus", getEmployeeDetails, (req, res) => {});
+router.post("/getallemployees", getEmployees, (req, res) => {});
+
+router.post("/getemployeeData/:id", getEmployeeData, (req, res) => {});
+
+router.post("/updateLockUnlock/:id", updateLockUnlock, (req, res) => {});
 
 export default router;

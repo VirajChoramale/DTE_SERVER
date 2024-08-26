@@ -7,6 +7,7 @@ import { SendGmail } from "../utility/sendGmail.mjs";
 import { createMulterInstance } from "../../MulterHelper.mjs";
 import { genRandomString } from "../utility/GenRandomKey.mjs";
 import path from "path";
+import { log } from "console";
 
 //This controller for common operation which are common in different roles
 function getFormattedDate() {
@@ -137,15 +138,77 @@ export const getPostCountEmp = async (req, res) => {
   });
 };
 
-export const getEmployeeDetails = async (req, res) => {
+export const getEmployees = async (req, res) => {
   const { search } = req.query;
-  const employees = await executeReadQuery(readQueries.getEmployeeData(), [
+  const employees = await executeReadQuery(readQueries.getEmployeesData(), [
     `%${search}%`,
     `%${search}%`,
   ]);
+
   return res.send({
     employees: employees,
   });
+};
+
+export const getEmployeeData = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const basicDetails = await executeReadQuery(
+      readQueries.getEmployeeBasicDetails(),
+      id
+    );
+
+    const officeDetails = await executeReadQuery(
+      readQueries.getEmployeeInstitute(),
+      basicDetails[0].inst_id
+    );
+    const courseGroup = await executeReadQuery(
+      readQueries.getEmployeeCourseGroup(),
+      basicDetails[0].course_group
+    );
+
+    const transferRemarks = await executeReadQuery(
+      readQueries.getEmployeeRemarks(),
+      id
+    );
+
+    const appliedForTransfer = await executeReadQuery(
+      readQueries.appliedForTransfer(),
+      id
+    );
+
+    res.send({
+      basicDetails: basicDetails[0],
+      officeDetails: officeDetails[0],
+      courseGroup: courseGroup[0],
+      transferRemarks: transferRemarks[0],
+      appliedForTransfer: appliedForTransfer,
+    });
+  } catch (error) {
+    return res.status(402).send({ msg: "Something went wrong" });
+  }
+};
+
+export const updateLockUnlock = async (req, res) => {
+  const { id } = req.params;
+  const status = req.body;
+  console.log(status, id);
+
+  try {
+    const lockUnlock = await update_table(
+      "employee",
+      "id",
+      id,
+
+      Object.keys(status),
+      Object.values(status)
+    );
+    console.log(lockUnlock);
+    return res.status(200).send({ lockUnlock });
+  } catch (error) {
+    console.log(error);
+    // return res.status(402).send({ msg: "Something went wrong" });
+  }
 };
 
 /* create prof <---*/

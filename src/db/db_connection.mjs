@@ -10,12 +10,13 @@ const primary_connection = createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.MODE=="PROD"?process.env.DB_PROD:process.env.DB_DEV,
+      database:
+        process.env.MODE == "PROD" ? process.env.DB_PROD : process.env.DB_DEV,
       dateStrings: true,
+      timezone: "+05:30",
     }),
   destroy: (conn) => conn.end(),
-  max: 10,
-  min: 2,
+
   idleTimeoutMillis: 60000,
 });
 
@@ -25,12 +26,47 @@ const replica_connection = createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      database:
+        process.env.MODE == "PROD" ? process.env.DB_PROD : process.env.DB_DEV,
+      dateStrings: true,
+      timezone: "+05:30",
     }),
+
   destroy: (conn) => conn.end(),
-  max: 5,
-  min: 2,
+
+  idleTimeoutMillis: 60000,
+});
+const multiConn = createPool({
+  create: () =>
+    mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database:
+        process.env.MODE == "PROD" ? process.env.DB_PROD : process.env.DB_DEV,
+      dateStrings: true,
+      timezone: "+05:30",
+    }),
+
+  destroy: (conn) => conn.end(),
+
+  idleTimeoutMillis: 60000,
+});
+const replica_four = createPool({
+  create: () =>
+    mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database:
+        process.env.MODE == "PROD" ? process.env.DB_PROD : process.env.DB_DEV,
+      dateStrings: true,
+      timezone: "+05:30",
+    }),
+
+  destroy: (conn) => conn.end(),
+
   idleTimeoutMillis: 60000,
 });
 
-export { primary_connection, replica_connection };
+export { primary_connection, replica_connection, multiConn, replica_four };
