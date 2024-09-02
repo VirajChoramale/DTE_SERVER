@@ -234,10 +234,32 @@ readQueries.getEmployeeCourseGroup = () => {
 
 readQueries.getEmployeeRemarks = () => {
   return `select principal_remark,ro_remark FROM employee_transfer_remarks where employee_id=?`;
-}
+};
 
 readQueries.appliedForTransfer = () => {
   return `select emp_id FROM transferdata where emp_id=?`;
-}
+};
+
+readQueries.getContactDetails = () => {
+  return `select * from institute_contact_details`;
+};
+
+readQueries.getAllEmployeesRemarks = () => {
+  return `select full_name,sevarth_no,designation_name,coursename,principal_remark,ro_remark from dtemsbteedu_dte_prod.employee as emp
+left join dtemsbteedu_dte_prod.designation_master as dm on emp.designation_id = dm.id
+left join dtemsbteedu_dte_prod.courses as cn on emp.course_id = cn.id
+left join dtemsbteedu_dte_prod.employee_transfer_remarks as etr on emp.id = etr.employee_id
+WHERE emp.inst_id = ?`;
+};
+
+readQueries.getRequesttype = () => {
+  return `SELECT employee.id AS employee_id, transferdata.requesttype
+FROM dtemsbteedu_dte_prod.employee 
+LEFT JOIN dtemsbteedu_dte_prod.transferdata 
+    ON transferdata.emp_id = employee.id
+WHERE employee.inst_id = ?
+GROUP BY employee.id, transferdata.requesttype
+ORDER BY employee.id, transferdata.requesttype;`;
+};
 
 export { readQueries };

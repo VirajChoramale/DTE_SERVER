@@ -139,15 +139,19 @@ export const getPostCountEmp = async (req, res) => {
 };
 
 export const getEmployees = async (req, res) => {
-  const { search } = req.query;
-  const employees = await executeReadQuery(readQueries.getEmployeesData(), [
-    `%${search}%`,
-    `%${search}%`,
-  ]);
+  try {
+    const { search } = req.query;
+    const employees = await executeReadQuery(readQueries.getEmployeesData(), [
+      `%${search}%`,
+      `%${search}%`,
+    ]);
 
-  return res.send({
-    employees: employees,
-  });
+    return res.send({
+      employees: employees,
+    });
+  } catch (error) {
+    res.status(402).send({ msg: "Something went wrong" });
+  }
 };
 
 export const getEmployeeData = async (req, res) => {
@@ -208,6 +212,18 @@ export const updateLockUnlock = async (req, res) => {
   } catch (error) {
     console.log(error);
     // return res.status(402).send({ msg: "Something went wrong" });
+  }
+};
+
+export const getContactDetails = async (req, res) => {
+  try {
+    const contactDetails = await executeReadQuery(
+      readQueries.getContactDetails()
+    );
+
+    return res.status(200).send({ contactDetails: contactDetails });
+  } catch (error) {
+    return res.status(402).send({ msg: "Something went wrong" });
   }
 };
 

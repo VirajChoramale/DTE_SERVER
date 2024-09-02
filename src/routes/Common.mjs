@@ -21,7 +21,9 @@ import {
   getEmployees,
   getEmployeeData,
   updateLockUnlock,
+  getContactDetails,
 } from "../controllers/commonController.mjs";
+import { getAllEmployeesRemarks } from "../Services/Institute.mjs";
 
 router.post("/create_profile_data", getDataCreateProfile, (req, res) => {});
 router.post("/getEmployeesData/", getEmployee, (req, res) => {});
@@ -61,5 +63,9 @@ router.post("/getallemployees", getEmployees, (req, res) => {});
 router.post("/getemployeeData/:id", getEmployeeData, (req, res) => {});
 
 router.post("/updateLockUnlock/:id", updateLockUnlock, (req, res) => {});
+
+router.post("/getContactDetails", getContactDetails, (req, res) => {});
+
+router.post("/getallemployeeremarks", getAllEmployeesRemarks, (req, res) => {});
 
 export default router;
