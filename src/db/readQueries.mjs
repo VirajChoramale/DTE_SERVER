@@ -245,21 +245,43 @@ readQueries.getContactDetails = () => {
 };
 
 readQueries.getAllEmployeesRemarks = () => {
-  return `select full_name,sevarth_no,designation_name,coursename,principal_remark,ro_remark from dtemsbteedu_dte_prod.employee as emp
-left join dtemsbteedu_dte_prod.designation_master as dm on emp.designation_id = dm.id
-left join dtemsbteedu_dte_prod.courses as cn on emp.course_id = cn.id
-left join dtemsbteedu_dte_prod.employee_transfer_remarks as etr on emp.id = etr.employee_id
+  return `select emp.id,is_profile_confirmed,full_name,sevarth_no,designation_name,coursename,principal_remark,ro_remark from employee as emp
+left join designation_master as dm on emp.designation_id = dm.id
+left join courses as cn on emp.course_id = cn.id
+left join employee_transfer_remarks as etr on emp.id = etr.employee_id
 WHERE emp.inst_id = ?`;
 };
 
-readQueries.getRequesttype = () => {
+readQueries.getAppliedForTransferStatus = () => {
   return `SELECT employee.id AS employee_id, transferdata.requesttype
-FROM dtemsbteedu_dte_prod.employee 
-LEFT JOIN dtemsbteedu_dte_prod.transferdata 
+FROM employee 
+LEFT JOIN transferdata 
     ON transferdata.emp_id = employee.id
 WHERE employee.inst_id = ?
 GROUP BY employee.id, transferdata.requesttype
 ORDER BY employee.id, transferdata.requesttype;`;
+};
+
+readQueries.getSingleEmployeeAppliedTransferStatus = () => {
+  return `SELECT employee.id AS employee_id, transferdata.requesttype
+FROM employee 
+LEFT JOIN transferdata 
+    ON transferdata.emp_id = employee.id
+WHERE employee.id = ?
+GROUP BY employee.id, transferdata.requesttype
+ORDER BY employee.id, transferdata.requesttype;`;
+};
+
+readQueries.getChoiceOrder = () => {
+  return `SELECT choiceorder,inst_name,requesttype,trasnfer_reason FROM transferdata left join institutes on transferdata.selected_inst = institutes.id  where emp_id = ? order by requesttype,choiceorder`;
+};
+
+readQueries.getTransferOfficeRemarks = () => {
+  return `SELECT * FROM transfer_office_remarks`;
+};
+
+readQueries.getprincipalRemarks = () => {
+  return `SELECT principal_other_remark,principal_remark FROM employee_transfer_remarks where employee_id = ?;`;
 };
 
 export { readQueries };
